@@ -1,28 +1,35 @@
 import { TLSerialization, TLDeserialization} from './tl_serialization';
-import { config } from './config';
-import CryptoJS from './CryptoJS';
+import CryptoJS from './crypto';
+import { bufferConcat, nextRandomInt } from './utils';
+import $ from 'jquery';
 
+wrapApiCall();
 
-wrapApiCall(message, options){
+function wrapApiCall(){
+
+  var method='messages.getHistory' ,
+      params={add_offset:0, limit:20, offset_id:12, 
+              peer: {access_hash: "13428155690676809515", user_id:"777000", _:"inputPeerUser"} },
+      options={timeout: 300, noErrorBox: true};
 
   var serializer = new TLSerialization(options);
 
   serializer.storeInt(0xda9b0d0d, 'invokeWithLayer')
-  serializer.storeInt(Config.Schema.API.layer, 'layer')
+  serializer.storeInt(74, 'layer')
   serializer.storeInt(0xc7481da6, 'initConnection')
-  serializer.storeInt(Config.App.id, 'api_id')
-  serializer.storeString(navigator.userAgent || 'Unknown UserAgent', 'device_model')
-  serializer.storeString(navigator.platform || 'Unknown Platform', 'system_version')
-  serializer.storeString(Config.App.version, 'app_version')
-  serializer.storeString(navigator.language || 'en', 'system_lang_code')
+  serializer.storeInt(2496, 'api_id')
+  serializer.storeString('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36', 'device_model')
+  serializer.storeString('Win32', 'system_version')
+  serializer.storeString('0.7.0', 'app_version')
+  serializer.storeString( 'en-US', 'system_lang_code')
   serializer.storeString('', 'lang_pack')
-  serializer.storeString(navigator.language || 'en', 'lang_code')
+  serializer.storeString('en-US', 'lang_code')
 
   serializer.storeMethod(method, params)
 
   var message = {
-    msg_id: messageID,
-    seq_no: seqNo,
+    msg_id: "6607844405590270680",
+    seq_no: 36,
     body: serializer.getBytes(true),
     isAPI: true
   }
@@ -32,7 +39,7 @@ wrapApiCall(message, options){
 }
 
 
-getEncryptedMessage =function (dataWithPadding) {
+function getEncryptedMessage (dataWithPadding) {
 
       return getMsgKey(dataWithPadding, true).then(function (msgKey) {
         return getAesKeyIv(msgKey, true).then(function (keyIv) {
@@ -48,9 +55,9 @@ getEncryptedMessage =function (dataWithPadding) {
       })
     }
 
-var authKeyUint8
+var authKeyUint8;
 
-getMsgKey = function (dataWithPadding, isOut) {
+function getMsgKey (dataWithPadding, isOut) {
   var authKey = authKeyUint8
   var x = isOut ? 0 : 8
   var msgKeyLargePlain = bufferConcat(authKey.subarray(88 + x, 88 + x + 32), dataWithPadding)
@@ -60,7 +67,7 @@ getMsgKey = function (dataWithPadding, isOut) {
   })
 }
 
-getAesKeyIv =function (msgKey, isOut) {
+function getAesKeyIv(msgKey, isOut) {
       var authKey = authKeyUint8
       var x = isOut ? 0 : 8
       var sha2aText = new Uint8Array(52)
@@ -73,7 +80,7 @@ getAesKeyIv =function (msgKey, isOut) {
 
       sha2bText.set(authKey.subarray(40 + x, 40 + x + 36), 0)
       sha2bText.set(msgKey, 36)
-      promises.sha2b = CryptoWorker.sha256Hash(sha2bText)
+      promises.sha2b = CryptoJS.sha256Hash(sha2bText)
 
       return promises.then(function (result) {
         var aesKey = new Uint8Array(32)
@@ -96,11 +103,16 @@ getAesKeyIv =function (msgKey, isOut) {
 
 
 
-var serverSalt, sessionID, authKeyID, url;
 
-sendEncryptedRequest = function (message, options) {
+
+function sendEncryptedRequest(message, options) {
 
       options = options || {}
+
+      var serverSalt=[167, 143, 57, 220, 74, 162, 172, 132], 
+          sessionID=[54, 125, 114, 244, 159, 63, 54, 224], 
+          authKeyID=[225, 24, 164, 70, 90, 223, 95, 229], 
+          url="https://pluto.web.telegram.org/apiw1";
 
       var data = new TLSerialization({startMaxLength: message.body.length + 2048})
 
@@ -133,10 +145,10 @@ sendEncryptedRequest = function (message, options) {
         var baseError = {code: 406, type: 'NETWORK_BAD_RESPONSE', url: url}
 
 
-        options = angular.extend(options || {}, {
-          responseType: 'arraybuffer',
-          transformRequest: null
-        });
+        options = options || {};
+
+        options.responseType= 'arraybuffer';
+        options.transformRequest=null;
 
         requestPromise = $.ajax.post(url, requestData, options)
 

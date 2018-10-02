@@ -1,14 +1,4 @@
-Config = window.Config || {}
-
-/*
-
-  IMPORTANT NOTICE
-  ================
-
-  Do not publish your Webogram fork with my app credentials (below), or your application may be blocked.
-  You can get your own api_id, api_hash at https://my.telegram.org, see manual at https://core.telegram.org/api/obtaining_api_id.
-
-*/
+var Config = window.Config || {}
 
 Config.App = {
   id: 2496,
@@ -18,21 +8,21 @@ Config.App = {
 }
 
 Config.Modes = {
-  test: location.search.indexOf('test=1') > 0,
-  debug: location.search.indexOf('debug=1') > 0,
-  http: location.search.indexOf('http=1') > 0,
-  ssl: location.search.indexOf('ssl=1') > 0 || location.protocol == 'https:' && location.search.indexOf('ssl=0') == -1,
-  force_mobile: location.search.indexOf('mobile=1') > 0,
-  force_desktop: location.search.indexOf('desktop=1') > 0,
-  nacl: location.search.indexOf('nacl=0') == -1,
-  webcrypto: location.search.indexOf('webcrypto=0') == -1,
-  packed: location.protocol == 'app:' || location.protocol == 'chrome-extension:',
+  test: window.location.search.indexOf('test=1') > 0,
+  debug: window.location.search.indexOf('debug=1') > 0,
+  http: window.location.search.indexOf('http=1') > 0,
+  ssl: window.location.search.indexOf('ssl=1') > 0 || window.location.protocol == 'https:' && window.location.search.indexOf('ssl=0') == -1,
+  force_mobile: window.location.search.indexOf('mobile=1') > 0,
+  force_desktop: window.location.search.indexOf('desktop=1') > 0,
+  nacl: window.location.search.indexOf('nacl=0') == -1,
+  webcrypto: window.location.search.indexOf('webcrypto=0') == -1,
+  packed: window.location.protocol == 'app:' || window.location.protocol == 'chrome-extension:',
   ios_standalone: window.navigator.standalone && navigator.userAgent.match(/iOS|iPhone|iPad/),
-  chrome_packed: window.chrome && chrome.app && chrome.app.window && true || false,
+  chrome_packed: window.chrome && window.chrome.app && window.chrome.app.window && true || false,
   animations: true,
   memory_only: false,
-  allow_tmpfs: location.search.indexOf('tmpfs=yeahImSureIknowWhatImDoing') > 0 || false,
-  push_api: location.search.indexOf('push=1') == -1
+  allow_tmpfs: window.location.search.indexOf('tmpfs=yeahImSureIknowWhatImDoing') > 0 || false,
+  push_api: window.location.search.indexOf('push=1') == -1
 }
 
 Config.Navigator = {
@@ -42,8 +32,8 @@ Config.Navigator = {
   retina: window.devicePixelRatio > 1,
   ffos: navigator.userAgent.search(/mobi.+Gecko/i) != -1,
   ffos2p: navigator.userAgent.search(/mobi.+Gecko\/[34567]/i) != -1,
-  touch: screen.width <= 768 || ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch,
-  mobile: screen.width && screen.width < 480 || navigator.userAgent.search(/iOS|iPhone OS|Android|BlackBerry|BB10|Series ?[64]0|J2ME|MIDP|opera mini|opera mobi|mobi.+Gecko|Windows Phone/i) != -1
+  touch: window.screen.width <= 768 || ('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch,
+  mobile: window.screen.width && window.screen.width < 480 || navigator.userAgent.search(/iOS|iPhone OS|Android|BlackBerry|BB10|Series ?[64]0|J2ME|MIDP|opera mini|opera mobi|mobi.+Gecko|Windows Phone/i) != -1
 }
 
 // Touch detect: https://github.com/Modernizr/Modernizr/blob/master/feature-detects/touchevents.js
@@ -111,4 +101,4 @@ Config.CountryCodes = [['AB', 'country_select_modal_country_ab', '+7 840', '+7 9
 Config.LangCountries = {'es': 'ES', 'ru': 'RU', 'en': 'US', 'de': 'DE', 'it': 'IT', 'nl': 'NL', 'fr': 'FR', 'ca': 'ES', 'es-419': 'MX', 'ar': 'SA', 'he': 'IL', 'tr': 'TR', 'id': 'ID', 'pl': 'PL'}
 
 
-export { config }
+export { Config }

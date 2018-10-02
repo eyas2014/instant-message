@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import $ from 'jquery';
+import './lib/requestAPI'
+
+
 
 class App extends Component {
   componentDidMount(){
