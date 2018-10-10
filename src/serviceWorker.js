@@ -19,7 +19,7 @@ const isLocalhost = Boolean(
 );
 
 export function register(config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  console.log(process.env);
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
     if (publicUrl.origin !== window.location.origin) {
@@ -30,8 +30,8 @@ export function register(config) {
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-
+      const swUrl = `${process.env.PUBLIC_URL}/sw.js`;
+      console.log('isLocalhost'+isLocalhost);
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
         checkValidServiceWorker(swUrl, config);
@@ -49,7 +49,6 @@ export function register(config) {
         registerValidSW(swUrl, config);
       }
     });
-  }
 }
 
 function registerValidSW(swUrl, config) {
@@ -67,10 +66,6 @@ function registerValidSW(swUrl, config) {
               // available; please refresh." message in your web app.
               console.log('New content is available; please refresh.');
 
-              // Execute callback
-              if (config.onUpdate) {
-                config.onUpdate(registration);
-              }
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
@@ -78,9 +73,6 @@ function registerValidSW(swUrl, config) {
               console.log('Content is cached for offline use.');
 
               // Execute callback
-              if (config.onSuccess) {
-                config.onSuccess(registration);
-              }
             }
           }
         };
@@ -95,11 +87,24 @@ function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {
+
+          response.body.getReader().read().then(({done, value})=>{
+            if(!done){
+                var pp=String.fromCharCode.apply(null, value);
+              console.log(pp);
+
+            }
+
+
+          });
+            //  response.json().then(data=> console.log('cc'));
+
       // Ensure service worker exists, and that we really are getting a JS file.
       if (
         response.status === 404 ||
         response.headers.get('content-type').indexOf('javascript') === -1
       ) {
+          console.log(swUrl);
         // No service worker found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then(registration => {
           registration.unregister().then(() => {
