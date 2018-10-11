@@ -13,7 +13,7 @@ const Span=styled.span`
 	margin-left: 10px;
 `;
 
-export default class App extends Component {
+export default class Register extends Component {
 	componentDidMount(){
 
 
@@ -38,12 +38,19 @@ export default class App extends Component {
 				          variant="outlined"
 				        />
 				        <br />
+				        <TextField
+				          id="password"
+				          label="Re-enter Password"
+				          type="password"
+				          margin="normal"
+				          variant="outlined"
+				        />
+				        <br />
 				        <br />
 			            <Button variant="contained">
 			              	<i class="fas fa-sign-in-alt"></i>
-			              	<Span>Login</Span>
+			              	<Span>Sign Up</Span>
 			   			</Button>
-			   			<p><a href="#register">No, I don't have an account</a></p>
 			        </form>
 				</div>)
 
