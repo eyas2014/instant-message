@@ -7,47 +7,81 @@ import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles={
+	background: {
+		backgroundColor: '#ddd',
+	},
+
+	nav: {
+		borderRight: "solid 2px #aaa",
+		backgroundColor: "#fff",
+		height: "100%"
+	},
+	search: {
+		margin: "10px",
+		height: "44px",
+		overflow: "hidden"
+	},
+	iconButton: {
+		padding: '5px'
+	},
+
+	fullHeight:{
+		height: "100vh"
+	},
+	fillRemain: {
+		position: "absolute",
+		top: '48px',
+		bottom: '0px'
+
+	}
+
+}
 
 
-export default class App extends Component {
+class App extends Component {
 	render(){
 		const { classes } =this.props;
 		return (
-			<Grid container justify='center'>
-				<Grid item xs={12} md={8}>
+			<Grid container justify='center' className={classes.background}>
+				<Grid item xs={12} md={8} className={classes.fullHeight}>
 					<HeaderBar></HeaderBar>
 					<Grid container>
-						<Grid item xs={4}>
-							<FormControl>
+						<Grid item xs={3} className={classes.nav}>
 								<TextField placeholder="search"
 											variant="outlined"
 											margin="normal"
+											classes={{root: classes.search}}
 								          InputProps={{
+								          	className: classes.iconButton,
 								            startAdornment: (
 								              <InputAdornment>
-								                <IconButton aria-label="search">
+								                <IconButton aria-label="search" classes={{root: classes.iconButton}}>
 													<SearchIcon />
 								                </IconButton>
 								              </InputAdornment>
 								            ),
 								        	endAdornment: (
 								              <InputAdornment>
-								                <IconButton aria-label="close">
+								                <IconButton aria-label="close"  classes={{root: classes.iconButton}}>
 													<ClearIcon />
 								                </IconButton>
 								              </InputAdornment>
 								            ),
 								          }}>
 								</TextField>
-						     </FormControl>
 						</Grid>
-						<Grid item xs={8}>
+						<Grid item xs={9}>
 						</Grid>
 					</Grid>
-					<p>main!</p>
 				</Grid>
 			</Grid>)
 
 	}
 
 }
+
+
+export default withStyles(styles)(App);

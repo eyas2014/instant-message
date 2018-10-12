@@ -42,7 +42,7 @@ class HeaderBar extends Component {
 		return (
 			<AppBar position='static' classes={{root: classes.noShadow}}>
 				<Grid container>
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Toolbar  classes={{root: classes.floatLeft}} >
 					          <IconButton aria-label="Menu" color="inherit">
 					            <MenuIcon />
@@ -52,7 +52,7 @@ class HeaderBar extends Component {
 					          </Typography>
 				        	</Toolbar>
 				        </Grid>
-				        <Grid item xs={8}>
+				        <Grid item xs={9}>
 					        <Toolbar  classes={{root: classes.floatLeft}} >
 					          <Typography variant='inherit' className={classes.typography1}>
 					            Contact
