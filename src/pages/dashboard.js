@@ -3,10 +3,9 @@ import HeaderBar from '../components/header-bar';
 import { Container } from '../components//styled-components';
 
 
-
-
 export default class App extends Component {
 	render(){
+		const { classes } =this.props;
 		return (<Container width='70'>
 					<HeaderBar></HeaderBar>
 					<p>main!!</p>
