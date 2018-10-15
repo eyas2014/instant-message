@@ -40,7 +40,7 @@ class ContactTag extends Component {
 		return (      
 		<List component="nav">{contacts.map((item, index)=>{
 			return (	        
-			<ListItem button classes={{root: classes.root}}>
+			<ListItem button classes={{root: classes.root}} key={index}>
 	          <ListItemIcon>
 	            <SmsIcon />
 	          </ListItemIcon>

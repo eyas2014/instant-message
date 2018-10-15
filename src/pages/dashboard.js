@@ -3,7 +3,7 @@ import HeaderBar from '../components/header-bar';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Navigation from '../components/navigation';
-import MessageWriter from '../components/message-writer';
+import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 
@@ -38,6 +38,11 @@ const styles={
 }
 
 class App extends Component {
+	constructor(){
+		super();
+		this.state={showComposer: true};
+	}
+
 	render(){
 		const { classes } =this.props;
 		return (
@@ -51,7 +56,7 @@ class App extends Component {
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
 								<DialogBox></DialogBox>
-								<MessageControl></MessageControl>
+								{this.state.showComposer?<MessageComposer></MessageComposer>:<MessageControl></MessageControl>}
 							</Grid>
 						</Grid>
 					</div>
