@@ -33,7 +33,8 @@ const styles={
 	nav: {
 		borderRight: "solid 2px #aaa",
 		backgroundColor: "#fff",
-		height: "100%"
+		height: "100%",
+		overflowY: "scroll"
 	}
 }
 

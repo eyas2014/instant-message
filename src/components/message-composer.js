@@ -7,6 +7,9 @@ import IconCameraEnhance from '@material-ui/icons/CameraEnhance';
 import IconMic from '@material-ui/icons/Mic';
 import TextField from '@material-ui/core/TextField';
 import emotionPic from '../images/emojisprite_0.png';
+import Button from '@material-ui/core/Button';
+import squid from '../images/squid.png';
+import dolphin from '../images/dolphin.png';
 
 
 const styles={
@@ -16,13 +19,19 @@ const styles={
 		width: '100%',
 		height: '150px',
 	},
-	iconButton: {
-		backgroundColor: 'red',
-		borderRadius: '50%'
+	iconContainer: {
+
 	},
-	messageInput: {
-		width: "95%",
-		marginTop: "20px"
+	iconImage: {
+		width: "50px",
+		height: "auto",
+		border: "solid 2px green",
+		borderRadius: "50%"
+	},
+
+	messageRoot: {
+		width: "99%",
+		height: "90px"
 	},
 	composerIcon1: {
 		float: 'left',
@@ -30,7 +39,7 @@ const styles={
 	},
 	composerIcon2: {
 		paddingTop: '6px',
-		paddingLeft: '6px',
+		paddingLeft: '9px',
 		float:'left',
 		width: '6%'
 	},
@@ -39,6 +48,11 @@ const styles={
 		height: "30px",
 		background: "url("+emotionPic+") 60px 60px",
 		backgroundSize: "810px 210px"
+	},
+
+	messageInput: {
+		color: 'red'
+
 	}
 
 };
@@ -49,13 +63,12 @@ class MessageComposer extends Component {
 		return(
 			<Grid container className={classes.wrapper} justify="center">
 				<Grid item xs={1}>
-					<IconButton className={classes.iconButton}>YS</IconButton>
+					<div>
+						<img src={squid} alt='logo' className={classes.iconImage}></img>
+					</div>
 				</Grid>
 				<Grid item xs={8}>
-					<TextField className={classes.messageInput} multiline></TextField>
-
-
-
+					<TextField classes={{root: classes.messageRoot}} multiline rows={4}></TextField>
 					<div>
 						<div  className={classes.composerIcon1}>
 							<IconButton>
@@ -78,20 +91,17 @@ class MessageComposer extends Component {
 										</div>
 									</div>)
 						})}
-						<div  className={classes.composerIcon1}>
-							<IconButton>
+						<div  className={classes.composerIcon2}>
+							<Button color="primary" variant="contained">
 								Send
-							</IconButton>
+							</Button>
 						</div>
 					</div>
-
-
-
 				</Grid>
 				<Grid item xs={1}>
-					<IconButton className={classes.iconButton}>
-						<IconFileCopy></IconFileCopy>
-					</IconButton>
+					<div>
+						<img src={dolphin} alt='logo' className={classes.iconImage}></img>
+					</div>
 				</Grid>
 			</Grid>
 
