@@ -3,6 +3,9 @@ import HeaderBar from '../components/header-bar';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Navigation from '../components/navigation';
+import MessageWriter from '../components/message-writer';
+import DialogBox from '../components/dialog-box';
+import MessageControl from '../components/message-control';
 
 const styles={
 	background: {
@@ -12,7 +15,8 @@ const styles={
 		position: 'relative',
 		height: "100vh"
 	}, 
-	height100: {
+	dialogBox: {
+		position: 'relative',
 		height: "100%",
 		backgroundColor: "#fff"
 	},
@@ -25,6 +29,11 @@ const styles={
 		top: '48px', 
 		bottom: '0px', 
 		width: "100%"
+	},
+	nav: {
+		borderRight: "solid 2px #aaa",
+		backgroundColor: "#fff",
+		height: "100%"
 	}
 }
 
@@ -37,8 +46,12 @@ class App extends Component {
 					<HeaderBar></HeaderBar>
 					<div className={classes.fillRemain}>
 						<Grid container  className={classes.fullDiv}>
-							<Navigation></Navigation>
-							<Grid item xs={9}   className={classes.height100}>
+							<Grid item xs={3} className={classes.nav}>
+								<Navigation></Navigation>
+							</Grid>
+							<Grid item xs={9}   className={classes.dialogBox}>
+								<DialogBox></DialogBox>
+								<MessageControl></MessageControl>
 							</Grid>
 						</Grid>
 					</div>

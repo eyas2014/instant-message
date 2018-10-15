@@ -5,6 +5,11 @@ import Login from './pages/login';
 import Dashboard from './pages/dashboard';
 import Register from './pages/register';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import rootReducer from './lib/reducers';
+
+const store = createStore(rootReducer);
 
 const theme = createMuiTheme({
   palette: {
@@ -23,6 +28,7 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
+      <Provider store={store}>
         <div className="App">
           <Router>
             <Switch>
@@ -34,6 +40,7 @@ class App extends Component {
             </Switch>
           </Router>
         </div>
+      </Provider>
       </MuiThemeProvider>
     );
   }

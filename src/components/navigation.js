@@ -2,18 +2,14 @@ import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
+import ContactTag from './contact-tag';
+
 
 
 const styles={
-	nav: {
-		borderRight: "solid 2px #aaa",
-		backgroundColor: "#fff",
-		height: "100%"
-	},
 	search: {
 		margin: "10px",
 		height: "44px",
@@ -24,12 +20,18 @@ const styles={
 	}
 }
 
+const contact={
+	name: "tom",
+	message: "how are you...",
+	data: "10/19/2019"
+}
+
 
 class Navigation extends Component {
 	render(){
 		const { classes } =this.props;
 		return (
-			<Grid item xs={3} className={classes.nav}>
+			<div>
 				<TextField placeholder="search"
 							variant="outlined"
 							margin="normal"
@@ -52,7 +54,9 @@ class Navigation extends Component {
 				            ),
 				          }}>
 				</TextField>
-			</Grid>)
+
+				<ContactTag />
+			</div>)
 	}
 }
 
