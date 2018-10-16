@@ -16,10 +16,10 @@ const styles={
 
 class DialogBox extends Component {
 	render(){
-		const {messages, classes}= this.props;
+		const {messages, classes, toggleMessage}= this.props;
 		return (
 		<div className={classes.root}>{messages.map((item,index)=>{
-			return (<Message message={item} key={index}></Message>)
+			return (<Message toggleMessage={toggleMessage} message={item} key={index}></Message>)
 		})}
 		</div>)
 	}

@@ -41,7 +41,16 @@ const styles={
 class App extends Component {
 	constructor(){
 		super();
-		this.state={showComposer: true};
+		this.state={numberSelected: 0};
+	}
+
+	toggleMessage(toggle){
+		if(toggle)this.setState({numberSelected: this.state.numberSelected+1});
+		else this.setState({numberSelected: this.state.numberSelected-1});
+	}
+
+	cancelSelect(){
+		this.setState({numberSelected: 0});
 	}
 
 	render(){
@@ -56,8 +65,8 @@ class App extends Component {
 								<Navigation></Navigation>
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
-								<DialogBox></DialogBox>
-								{this.state.showComposer?<MessageComposer></MessageComposer>:<MessageControl></MessageControl>}
+								<DialogBox toggleMessage={this.toggleMessage.bind(this)} cancelSelect={this.state.numberSelected}></DialogBox>
+								{this.state.numberSelected?<MessageControl cancelSelect={this.cancelSelect.bind(this)}></MessageControl>:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>
 					</div>

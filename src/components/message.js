@@ -8,8 +8,19 @@ const styles={
 	tick: {
 		display: 'flex',
 		justifyContent: 'center',
+		alignItems: 'center',
+		'& svg': { 
+			color: '#fff'
+
+		}
+	},
+
+	selectedTick: {
+		display: 'flex',
+		justifyContent: 'center',
 		alignItems: 'center'
 	},
+
 	user: {
 		fontSize: '13px',
 		margin: '5px',
@@ -21,24 +32,33 @@ const styles={
 		margin: '5px',
 		textAlign: 'left'
 	},
-	iconImage: {
-		width: "40px",
-		height: "auto",
-		border: "solid 2px green",
-		borderRadius: "50%"
-	},
+
 	iconContainer: {
-		paddingTop: '10px'
+		paddingTop: '10px',
+		'& img': {
+			width: "40px",
+			height: "auto",
+			border: "solid 2px green",
+			borderRadius: "50%"
+		}
 	},
+
 	greyBackground: {
-		backgroundColor: "#ddd",
+		backgroundColor: "#eee",
 		paddingTop: "10px",
 		paddingBottom: "10px"
 	},
+
 	brightBackground:{
 		backgroundColor: "#fff",
 		paddingTop: "10px",
-		paddingBottom: "10px"
+		paddingBottom: "10px",
+		'&:hover': {
+			backgroundColor: "#eee",
+			'& svg': {
+				color: '#99f'
+			}
+		}
 	}
 
 }
@@ -47,13 +67,19 @@ const styles={
 class Message extends Component {
 	constructor(){
 		super()
-		this.state={selected: true}
+		this.state={selected: false}
 
 
 	}
 
 	selectMessage(){
-		this.setState({selected:!this.state.selected})
+		if(this.state.selected){
+			this.setState({selected:false});
+			this.props.toggleMessage(false)
+		}else{
+			this.setState({selected:true});
+			this.props.toggleMessage(true)
+		}
 	}
 
 
@@ -62,12 +88,12 @@ class Message extends Component {
 		return (
 		<div>
 			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={this.state.selected?classes.greyBackground:classes.brightBackground}>
-				<Grid item xs={1}   className={classes.tick}>
+				<Grid item xs={1}   className={this.state.selected?classes.selectedTick:classes.tick}>
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>
 				<Grid item  xs={1} >
 					<div  className={classes.iconContainer}>
-						<img src={dolphin} alt='logo' className={classes.iconImage}></img>
+						<img src={dolphin} alt='logo'></img>
 					</div>
 				</Grid>
 				<Grid item  xs={6}>

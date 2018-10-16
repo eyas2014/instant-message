@@ -35,7 +35,7 @@ const styles={
 
 class Message extends Component {
 	render(){
-		const {classes}=this.props;
+		const {classes, cancelSelect}=this.props;
 		return (
 			<div className={classes.root}>
 				<div className={classes.wrapperLeft}>
@@ -50,7 +50,7 @@ class Message extends Component {
 				    </Button>
 	      		</div>
 	      		<div className={classes.wrapperRight}>
-				    <Button className={classes.cancel}>
+				    <Button onClick={cancelSelect} className={classes.cancel}>
 				        Cancel
 				    </Button>
 	      		</div>
