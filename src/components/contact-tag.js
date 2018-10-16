@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import SmsIcon from '@material-ui/icons/Sms';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -62,7 +61,6 @@ class ContactTag extends Component {
 
 
 const mapStateToProps=function (state){
-	console.log(state);
 	return {contacts: state.contacts}
 }
 

@@ -20,12 +20,6 @@ const styles={
 	}
 }
 
-const contact={
-	name: "tom",
-	message: "how are you...",
-	data: "10/19/2019"
-}
-
 
 class Navigation extends Component {
 	render(){

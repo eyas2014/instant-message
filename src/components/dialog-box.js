@@ -19,19 +19,12 @@ class DialogBox extends Component {
 		const {messages, classes, toggleMessage}= this.props;
 		return (
 		<div className={classes.root}>{messages.map((item,index)=>{
-			return (<Message toggleMessage={toggleMessage} message={item} key={index}></Message>)
+			return (<Message toggleMessage={toggleMessage} message={{...item, id: index}} key={index}></Message>)
 		})}
 		</div>)
 	}
 
 }
 
+export default withStyles(styles)(DialogBox);
 
-const mapStateToProps=function (state){
-	console.log(state);
-	return {messages: state.dialogs}
-}
-
-const DialogBoxWithStyles=withStyles(styles)(DialogBox);
-
-export default connect(mapStateToProps)(DialogBoxWithStyles);

@@ -74,11 +74,9 @@ class Message extends Component {
 
 	selectMessage(){
 		if(this.state.selected){
-			this.setState({selected:false});
-			this.props.toggleMessage(false)
+			this.props.toggleMessage({status:false, id: this.props.message.id})
 		}else{
-			this.setState({selected:true});
-			this.props.toggleMessage(true)
+			this.props.toggleMessage({status:true, id: this.props.message.id})
 		}
 	}
 
@@ -87,7 +85,7 @@ class Message extends Component {
 		const {message, classes}= this.props;
 		return (
 		<div>
-			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={this.state.selected?classes.greyBackground:classes.brightBackground}>
+			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={message.selected?classes.greyBackground:classes.brightBackground}>
 				<Grid item xs={1}   className={this.state.selected?classes.selectedTick:classes.tick}>
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>

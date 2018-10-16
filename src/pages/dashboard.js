@@ -6,6 +6,7 @@ import Navigation from '../components/navigation';
 import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
+import { connect } from 'react-redux';
 
 const styles={
 	background: {
@@ -39,18 +40,28 @@ const styles={
 }
 
 class App extends Component {
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 		this.state={numberSelected: 0};
+		this.selected=new Array(this.props.messages.length).fill(false);
+		this.state.messages=this.props.messages;
 	}
 
 	toggleMessage(toggle){
-		if(toggle)this.setState({numberSelected: this.state.numberSelected+1});
-		else this.setState({numberSelected: this.state.numberSelected-1});
+		if(toggle.status){
+			this.setState({numberSelected: this.state.numberSelected+1});
+			this.selected[toggle.id]=true;
+		}
+		else {
+			this.setState({numberSelected: this.state.numberSelected-1});
+			this.selected[toggle.id]=false;
+		}
 	}
 
 	cancelSelect(){
 		this.setState({numberSelected: 0});
+		this.selected.fill(0);
+	//	this.setState({messages: this.props.messages.slice(0)});
 	}
 
 	render(){
@@ -65,7 +76,7 @@ class App extends Component {
 								<Navigation></Navigation>
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
-								<DialogBox toggleMessage={this.toggleMessage.bind(this)} cancelSelect={this.state.numberSelected}></DialogBox>
+								<DialogBox messages={this.state.messages} toggleMessage={this.toggleMessage.bind(this)}></DialogBox>
 								{this.state.numberSelected?<MessageControl cancelSelect={this.cancelSelect.bind(this)}></MessageControl>:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>
@@ -77,5 +88,10 @@ class App extends Component {
 
 }
 
+const mapStateToProps=function (state){
+	return {messages: state.dialogs}
+}
 
-export default withStyles(styles)(App);
+const AppWithStyles=withStyles(styles)(App);
+
+export default connect(mapStateToProps)(AppWithStyles);
