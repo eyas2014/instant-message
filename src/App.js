@@ -4,6 +4,7 @@ import {HashRouter as Router, Switch, Route} from 'react-router-dom';
 import Login from './pages/login';
 import Dashboard from './pages/dashboard';
 import Register from './pages/register';
+import Test from './pages/test';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -21,7 +22,7 @@ const theme = createMuiTheme({
 
 class App extends Component {
   componentDidMount(){
-      console.log("i tis working");
+      console.log("i tis workingx");
 
 
   }
@@ -36,6 +37,7 @@ class App extends Component {
               <Route path="/dashboard" component={Dashboard} />
               <Route path="/login" component={Login} />
               <Route path="/register" component={Register} />
+              <Route path="/test" component={Test} />
               <Route path="*" component={Login} />
             </Switch>
           </Router>

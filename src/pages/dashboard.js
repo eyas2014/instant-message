@@ -44,7 +44,6 @@ class App extends Component {
 		super(props);
 		this.state={numberSelected: 0};
 		this.selected=new Array(this.props.messages.length).fill(false);
-		this.state.messages=this.props.messages;
 	}
 
 	toggleMessage(toggle){
@@ -60,12 +59,11 @@ class App extends Component {
 
 	cancelSelect(){
 		this.setState({numberSelected: 0});
-		this.selected.fill(0);
-	//	this.setState({messages: this.props.messages.slice(0)});
+		this.selected.fill(false);
 	}
 
 	render(){
-		const { classes } =this.props;
+		const { classes, messages } =this.props;
 		return (
 			<Grid container justify='center' className={classes.background}>
 				<Grid item xs={12} md={8} className={classes.fullHeight}>
@@ -76,7 +74,7 @@ class App extends Component {
 								<Navigation></Navigation>
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
-								<DialogBox messages={this.state.messages} toggleMessage={this.toggleMessage.bind(this)}></DialogBox>
+								<DialogBox messages={messages} toggleMessage={this.toggleMessage.bind(this)} selected={this.selected}></DialogBox>
 								{this.state.numberSelected?<MessageControl cancelSelect={this.cancelSelect.bind(this)}></MessageControl>:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>

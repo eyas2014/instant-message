@@ -65,28 +65,19 @@ const styles={
 
 
 class Message extends Component {
-	constructor(){
-		super()
-		this.state={selected: false}
-
-
-	}
 
 	selectMessage(){
-		if(this.state.selected){
-			this.props.toggleMessage({status:false, id: this.props.message.id})
-		}else{
-			this.props.toggleMessage({status:true, id: this.props.message.id})
-		}
+		if(this.props.selected) this.props.toggleMessage({status:false, id: this.props.message.id});
+		else this.props.toggleMessage({status:true, id: this.props.message.id});
 	}
 
 
 	render(){
-		const {message, classes}= this.props;
+		const {message, classes, selected}= this.props;
 		return (
 		<div>
-			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={message.selected?classes.greyBackground:classes.brightBackground}>
-				<Grid item xs={1}   className={this.state.selected?classes.selectedTick:classes.tick}>
+			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={selected?classes.greyBackground:classes.brightBackground}>
+				<Grid item xs={1}   className={selected?classes.selectedTick:classes.tick}>
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>
 				<Grid item  xs={1} >
