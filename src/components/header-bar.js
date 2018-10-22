@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -37,6 +38,21 @@ const styles={
 }
 
 class HeaderBar extends Component {
+	logout(){
+		alert('logout');
+		fetch("http://localhost:3000/logout").then((response)=>{
+			return response.json()
+		}).then((data)=>{
+			console.log(data);
+			if(data.loggedOut) {
+				alert('yes');
+				window.location.href="/login";
+			}
+		})
+
+	}
+
+
 	render(){
 		const { classes } = this.props;
 		return (
@@ -62,12 +78,14 @@ class HeaderBar extends Component {
 					          </Typography>
 					        </Toolbar>
 					        <Toolbar   classes={{root: classes.floatRight}} >
-					          <IconButton aria-label="Menu" color="inherit">
-					            <SearchIcon />
-					          </IconButton>
-					          <IconButton aria-label="Menu" color="inherit">
-					            <MoreVertIcon />
-					          </IconButton>
+						        <Button color="inherit" variant="outlined" onClick={this.logout}>Logout
+						        </Button>
+						        <IconButton aria-label="Menu" color="inherit">
+						        	<SearchIcon />
+						        </IconButton>
+						        <IconButton aria-label="Menu" color="inherit">
+						        	<MoreVertIcon />
+						        </IconButton>
 					    	</Toolbar>
 				        </Grid>
 				    </Grid>

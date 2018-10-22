@@ -13,21 +13,68 @@ const Span=styled.span`
 	margin-left: 10px;
 `;
 
+const P=styled.p`
+	color: red;
+`;
+
 export default class App extends Component {
-	componentDidMount(){
-
-
+	constructor(){
+		super();
+		this.state={incorrectPassword: false}
 	}
+
+	submit(){
+		fetch("http://localhost:3000/authenticate", {
+	        method: "POST", 
+	        mode: "cors", 
+	        cache: "no-cache", 
+	        credentials: "same-origin", 
+	        headers: {
+	            "Content-Type": "application/json; charset=utf-8",	       
+	        },
+	        redirect: "follow", 
+	        referrer: "no-referrer", 
+	        body: JSON.stringify(this.state), 
+		}).then((response)=>{
+			return response.json()
+		}).then((data)=>{
+			console.log(data);
+			if(data.validated) {
+
+				window.location.href="http://localhost:3000#/dashboard";
+			}
+			else this.setState({incorrectPassword: true});
+		})
+	}
+
+	_changeHandler(e){
+		var input={};
+		input[e.target.id]=e.target.value;
+		this.setState(input);
+	}
+
+	componentWillMount(){
+		fetch("http://localhost:3000/prelogin").then((response)=>{
+			return response.json()
+		}).then((data)=>{
+			if(data.validated) {
+
+				window.location.href="http://localhost:3000#/dashboard";
+			}
+		})
+	}
+
 	render(){
 		return (<div>
 					<Image src={logo} alt='logo'></Image>
 					<form>
 				        <TextField
-				          id="user-name"
+				          id="userName"
 				          label="User Name"
 				          name="userName"
 				          margin="normal"
 				          variant="outlined"
+				          onChange={(e)=>this._changeHandler(e)}
 				        />
 				        <br />
 				        <TextField
@@ -36,11 +83,13 @@ export default class App extends Component {
 				          type="password"
 				          margin="normal"
 				          variant="outlined"
+				          onChange={(e)=>this._changeHandler(e)}
 				        />
+				        {this.state.incorrectPassword && <P>incorrect password!</P>}
 				        <br />
 				        <br />
-			            <Button variant="contained">
-			              	<i class="fas fa-sign-in-alt"></i>
+			            <Button onClick={()=>this.submit()} variant="contained">
+			              	<i className="fas fa-sign-in-alt"></i>
 			              	<Span>Login</Span>
 			   			</Button>
 			   			<p><a href="#register">No, I don't have an account</a></p>
