@@ -24,8 +24,6 @@ app.get('/prelogin', function(req, res){
 
 app.post('/authenticate', function(req, res){
 	crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-		console.log(key.toString('base64'));
-		console.log(account[req.body.userName]);
 		if(account[req.body.userName]===key.toString('base64')){
 			res.cookie("sessionID", req.body.userName);
 			res.send(JSON.stringify({validated: true}));
@@ -58,18 +56,18 @@ app.post('/loadMessage', function(req, res){
 
 
 app.get('/logout', function(req, res){
-	console.log('logging out...');
 	res.clearCookie('sessionID');
     res.send({loggedOut: true});
 });
 
 
 app.post('/sendMessage', function(req, res){
-	var messagesFile= `./database/${req.body.sender}-${req.body.receiver}.json`;
+	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
+	var messagesFile= `./database/${name}.json`;
 	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
-		var messages=JSON.parse(target).data;
-		messages.push(req.body);
-		writeToFile(messagesFile, JSON.stringify({data:messages}), "message added successfully")
+		var messages=JSON.parse(target);
+		messages.push({sender: req.body.sender, message: req.body.message});
+		writeToFile(messagesFile, JSON.stringify(messages), "message added successfully")
 	});
 	res.send(JSON.stringify({success: true}));
 })

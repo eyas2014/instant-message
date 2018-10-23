@@ -10,6 +10,8 @@ import emotionPic from '../images/emojisprite_0.png';
 import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
 import dolphin from '../images/dolphin.png';
+import { connect } from 'react-redux';
+import sendMessage from '../lib/actions'
 
 
 const styles={
@@ -58,6 +60,11 @@ const styles={
 };
 
 class MessageComposer extends Component {
+	send(){
+		this.props.dispatch(sendMessage(this.message.value));
+	}
+
+
 	render(){
 		const { classes } =this.props;
 		return(
@@ -68,7 +75,10 @@ class MessageComposer extends Component {
 					</div>
 				</Grid>
 				<Grid item xs={8}>
-					<TextField classes={{root: classes.messageRoot}} multiline rows={4}></TextField>
+					<TextField classes={{root: classes.messageRoot}} 
+								multiline rows={4}
+								inputRef={(el)=>this.message=el}>
+					</TextField>
 					<div>
 						<div  className={classes.composerIcon1}>
 							<IconButton>
@@ -92,7 +102,9 @@ class MessageComposer extends Component {
 									</div>)
 						})}
 						<div  className={classes.composerIcon2}>
-							<Button color="primary" variant="contained">
+							<Button color="primary" 
+									variant="contained"
+									onClick={()=>this.send()}>
 								Send
 							</Button>
 						</div>
@@ -114,4 +126,8 @@ class MessageComposer extends Component {
 }
 
 
-export default withStyles(styles)(MessageComposer);
+
+
+const ComposerWithStyles=withStyles(styles)(MessageComposer);
+
+export default connect()(ComposerWithStyles);

@@ -7,10 +7,12 @@ import Register from './pages/register';
 import Test from './pages/test';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './lib/reducers';
+import thunkMiddleware from 'redux-thunk';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer,
+                          applyMiddleware(thunkMiddleware));
 
 const theme = createMuiTheme({
   palette: {
