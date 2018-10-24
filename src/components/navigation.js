@@ -63,7 +63,7 @@ class Navigation extends Component {
 				          }}>
 				</TextField>
 
-				{loading?<img src={spinner} className={classes.spinner}></img>:<ContactTag />}
+				{loading?<img src={spinner} className={classes.spinner} alt="spinner"></img>:<ContactTag />}
 			</div>)
 	}
 }

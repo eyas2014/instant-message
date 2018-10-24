@@ -5,7 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SmsIcon from '@material-ui/icons/Sms';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { updateDialog } from '../lib/actions';
+import { loadDialog } from '../lib/actions';
 
 const styles={
 	root: {
@@ -39,7 +39,7 @@ class ContactTag extends Component {
 		const {sender, receiver }= this.props;
 		if(contact!==receiver) {
 			this.props.dispatch({type:'updateReceiver', receiver: contact});
-			this.props.dispatch(updateDialog({receiver: contact, sender}));
+			this.props.dispatch(loadDialog({receiver: contact, sender}));
 		}
 
 	}

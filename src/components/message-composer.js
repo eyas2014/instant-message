@@ -62,7 +62,6 @@ const styles={
 class MessageComposer extends Component {
 	send(){
 		const {sender, receiver}=this.props;
-		console.log(this.props);
 		this.props.dispatch(sendMessage({message:this.message.value, sender, receiver}));
 	}
 

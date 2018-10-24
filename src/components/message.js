@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import dolphin from '../images/dolphin.png';
 import IconCheckCircle from '@material-ui/icons/CheckCircle';
+import spinner from '../images/spinner.gif';
 
 const styles={
 	tick: {
@@ -33,14 +34,19 @@ const styles={
 		textAlign: 'left'
 	},
 
-	iconContainer: {
-		paddingTop: '10px',
-		'& img': {
-			width: "40px",
-			height: "auto",
-			border: "solid 2px green",
-			borderRadius: "50%"
-		}
+	messageIcon: {
+		marginTop:'20px',
+		width: "40px",
+		height: "auto",
+		border: "solid 2px green",
+		borderRadius: "50%"
+	},
+
+	spinner: {
+		marginTop:'20px',
+		width: "40px",
+		height: "auto",
+		borderRadius: "50%"
 	},
 
 	greyBackground: {
@@ -73,7 +79,7 @@ class Message extends Component {
 
 
 	render(){
-		const {message, classes, selected}= this.props;
+		const {message, classes, selected, pending}= this.props;
 		return (
 		<div>
 			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={selected?classes.greyBackground:classes.brightBackground}>
@@ -81,12 +87,13 @@ class Message extends Component {
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>
 				<Grid item  xs={1} >
-					<div  className={classes.iconContainer}>
-						<img src={dolphin} alt='logo'></img>
+					<div>
+						{pending?<img src={spinner} className={classes.spinner} alt="spinner"></img>
+								:<img src={dolphin} className={classes.messageIcon} alt='logo'></img>}
 					</div>
 				</Grid>
 				<Grid item  xs={6}>
-					<p className={classes.user}>{message.name}</p>
+					<p className={classes.user}>{message.sender}</p>
 					<div>
 						<p className={classes.message}>{message.message}</p>
 					</div>

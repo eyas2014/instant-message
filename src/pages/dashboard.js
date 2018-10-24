@@ -7,6 +7,7 @@ import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 import { connect } from 'react-redux';
+import spinner from '../images/spinner.gif';
 
 const styles={
 	background: {
@@ -36,6 +37,12 @@ const styles={
 		backgroundColor: "#fff",
 		height: "100%",
 		overflowY: "scroll"
+	},
+	spinner: {
+		width: '20%',
+		margin: 'auto',
+		marginTop: '20%',
+		height: 'auto'
 	}
 }
 
@@ -63,7 +70,7 @@ class App extends Component {
 	}
 
 	render(){
-		const { classes, messages } =this.props;
+		const { classes, messages, loading, pending} =this.props;
 		return (
 			<Grid container justify='center' className={classes.background}>
 				<Grid item xs={12} md={8} className={classes.fullHeight}>
@@ -74,7 +81,13 @@ class App extends Component {
 								<Navigation></Navigation>
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
-								<DialogBox messages={messages} toggleMessage={this.toggleMessage.bind(this)} selected={this.selected}></DialogBox>
+								{loading==='loading'&&<img src={spinner} className={classes.spinner} alt="spinner"></img>}
+								{loading==='loaded'&&<DialogBox messages={messages} 
+																toggleMessage={this.toggleMessage.bind(this)} 
+																selected={this.selected}
+																pending={pending}>
+													 </DialogBox>}
+								{loading==='empty'&&<p>empty</p>}
 								{this.state.numberSelected?<MessageControl cancelSelect={this.cancelSelect.bind(this)}></MessageControl>:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>
@@ -87,7 +100,10 @@ class App extends Component {
 }
 
 const mapStateToProps=function (state){
-	return {messages: state.dialogs}
+	return {messages: state.dialogs.data,
+			pending: state.dialogs.pending,
+			loading: state.dialogs.loading
+			}
 }
 
 const AppWithStyles=withStyles(styles)(App);

@@ -28,12 +28,18 @@ function contacts(state={loading: true, data:[]}, action){
 }
 
 
-function dialogs(state=[], action){
-	if(action.type==='loadDialog') {
-		state=[...action.dialog]
+function dialogs(state={loading: 'empty', data:[]}, action){
+	if(action.type==='requestDialog'){
+		state={loading:'loading', data:[]};
 	}
-	if(action.type==='newMessage') {
-		state=[...state, action.message];
+	if(action.type==='loadDialog') {
+		state={loading:'loaded', data:action.dialog, pending:0};
+	}
+	if(action.type==='newMessageStart') {
+		state={loading:'loaded', data: [...state.data, action.message], pending: ++state.pending}
+	}
+	if(action.type==='newMessageFinish') {
+		state={loading:'loaded', data: state.data, pending: --state.pending}
 	}
 	return state;
 }

@@ -15,12 +15,30 @@ const styles={
 }
 
 class DialogBox extends Component {
+	componentDidUpdate(){
+		this.refs.dialogBox.scrollTop=this.refs.dialogBox.scrollHeight
+	}
+
+
 	render(){
-		const {classes, messages, selected, toggleMessage}= this.props;
+		const {classes, messages, selected, toggleMessage, pending}= this.props;
 		return (
-		<div className={classes.root}>{messages.map((item,index)=>{
-			return (<Message toggleMessage={toggleMessage} message={{...item, id: index}} key={index} selected={selected[index]}></Message>)
-		})}
+		<div className={classes.root} ref="dialogBox">
+			{messages.slice(0, messages.length-pending).map((item,index)=>{
+				return (<Message toggleMessage={toggleMessage} 
+								 message={{...item, id: index}} 
+								 key={index} 
+								 selected={selected[index]}>
+						</Message>)
+			})}
+			{messages.slice(messages.length-pending).map((item,index)=>{
+				return (<Message toggleMessage={toggleMessage} 
+								 message={{...item, id: index, loading: true}} 
+								 key={index} 
+								 selected={selected[index]}
+								 pending>
+						</Message>)
+			})}
 		</div>)
 	}
 

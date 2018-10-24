@@ -51,7 +51,9 @@ app.post('/registration', function(req, res){
 app.post('/loadDialog', function(req, res){ 
 	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
 	fs.readFile(`./database/${name}.json`, {encoding: 'utf8'}, function(err, target){
-		res.send(target);
+		setTimeout(function(){
+			res.send(target);
+		},1000)
 	});
 });
 
@@ -68,7 +70,7 @@ app.post('/getContacts', function(req, res){
 		setTimeout(function(){
 			console.log("sending contacts");
 			res.send(target);
-		}, 5000)
+		}, 1000)
 		
 	});
 	
@@ -78,19 +80,25 @@ app.post('/getContacts', function(req, res){
 app.post('/sendMessage', function(req, res){
 	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
 	var messagesFile= `./database/${name}.json`;
-	console.log(messagesFile);
 	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
-		console.log(target);
 		var messages=JSON.parse(target);
-		messages.push({sender: req.body.sender, message: req.body.message});
-		writeToFile(messagesFile, JSON.stringify(messages), "message added successfully")
+		messages.push({sender: req.body.sender, message: req.body.message, date: req.body.date});
+		fs.writeFile(messagesFile, 
+					 JSON.stringify(messages), 
+					 {encoding: 'utf8'}, 
+					 ()=>{
+						console.log("message added successfully");
+						setTimeout(function(){
+							res.send(JSON.stringify({success: true}));																			
+					 }, 5000);
+		});
 	});
-	res.send(JSON.stringify({success: true}));
+
 })
 
 
 function writeToFile(fileName, content, successMessage){
-	fs.writeFile(fileName, content, {encoding: 'utf8'}, ()=>console.log(successMessage));
+	
 }
 
 app.listen(port, function(){console.log(`app is listening at port${port}`)});
