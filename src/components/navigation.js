@@ -6,7 +6,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import ContactTag from './contact-tag';
-
+import {updateContacts} from '../lib/actions';
+import { connect } from 'react-redux';
+import spinner from '../images/spinner.gif';
 
 
 const styles={
@@ -17,13 +19,25 @@ const styles={
 	},
 	iconButton: {
 		padding: '5px'
+	},
+	spinner: {
+		marginTop: '100px',
+		width: '60px',
+		height: 'auto',
+		margin: 'auto'
 	}
 }
 
 
 class Navigation extends Component {
+
+	componentWillMount(){
+		this.props.dispatch(updateContacts({clientName: 'Yaming'}));
+	}
+
+
 	render(){
-		const { classes } =this.props;
+		const { classes, loading } =this.props;
 		return (
 			<div>
 				<TextField placeholder="search"
@@ -49,10 +63,14 @@ class Navigation extends Component {
 				          }}>
 				</TextField>
 
-				<ContactTag />
+				{loading?<img src={spinner} className={classes.spinner}></img>:<ContactTag />}
 			</div>)
 	}
 }
 
+function mapStateToProps(state){
+	return {loading: state.contacts.loading}
+}
 
-export default withStyles(styles)(Navigation);
+
+export default connect(mapStateToProps)(withStyles(styles)(Navigation));

@@ -48,8 +48,9 @@ app.post('/registration', function(req, res){
 });
 
 
-app.post('/loadMessage', function(req, res){ 
-	fs.readFile(`./database/${req.body.sender}-${req.body.receiver}.json`, {encoding: 'utf8'}, function(err, target){
+app.post('/loadDialog', function(req, res){ 
+	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
+	fs.readFile(`./database/${name}.json`, {encoding: 'utf8'}, function(err, target){
 		res.send(target);
 	});
 });
@@ -60,11 +61,26 @@ app.get('/logout', function(req, res){
     res.send({loggedOut: true});
 });
 
+app.post('/getContacts', function(req, res){
+	var contactsFile= `./database/${req.body.clientName}-contact.json`;
+	fs.readFile(contactsFile, {encoding: 'utf8'}, function(err, target){
+		var json=JSON.parse(target)
+		setTimeout(function(){
+			console.log("sending contacts");
+			res.send(target);
+		}, 5000)
+		
+	});
+	
+});
+
 
 app.post('/sendMessage', function(req, res){
 	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
 	var messagesFile= `./database/${name}.json`;
+	console.log(messagesFile);
 	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
+		console.log(target);
 		var messages=JSON.parse(target);
 		messages.push({sender: req.body.sender, message: req.body.message});
 		writeToFile(messagesFile, JSON.stringify(messages), "message added successfully")

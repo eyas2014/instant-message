@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
 import dolphin from '../images/dolphin.png';
 import { connect } from 'react-redux';
-import sendMessage from '../lib/actions'
+import {sendMessage} from '../lib/actions'
 
 
 const styles={
@@ -61,9 +61,10 @@ const styles={
 
 class MessageComposer extends Component {
 	send(){
-		this.props.dispatch(sendMessage(this.message.value));
+		const {sender, receiver}=this.props;
+		console.log(this.props);
+		this.props.dispatch(sendMessage({message:this.message.value, sender, receiver}));
 	}
-
 
 	render(){
 		const { classes } =this.props;
@@ -125,9 +126,13 @@ class MessageComposer extends Component {
 
 }
 
+function mapStateToProps(state){
+	return {sender: state.sender,
+			receiver: state.receiver}
+}
 
 
 
 const ComposerWithStyles=withStyles(styles)(MessageComposer);
 
-export default connect()(ComposerWithStyles);
+export default connect(mapStateToProps)(ComposerWithStyles);

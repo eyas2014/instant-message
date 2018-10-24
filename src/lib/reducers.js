@@ -1,40 +1,44 @@
 import { combineReducers } from 'redux';
 
-const initialContact=[{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}},
-					{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}},
-					{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}},
-					{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}},
-					{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}},
-					{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}},
-					{user:'Tom', date: '10/18/2018', lastMessage: {Name: 'Tom', message: 'How are you xxxxx'}}];
 
+function sender(state='Yaming', action){
+	if(action.type==="updateSender"){
 
-const messages=[{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'},
-				{name:'Tom', date: '10/18/2018', message: 'How are you xxxxx'}];
-
-function contacts(state=initialContact, action){
-
-	return state;
-
-}
-
-
-function dialogs(state=messages, action){
-	if(action.type==='message') {
-		state=[...state, {name: action.data.name, message: action.data.message, date: action.data.date}];
 	}
 	return state;
 }
 
 
-const Reducers=combineReducers({dialogs, contacts});
+function receiver(state='', action){
+	if(action.type==="updateReceiver"){
+		state=action.receiver;
+	}
+	return state;
+}
+
+
+function contacts(state={loading: true, data:[]}, action){
+	if(action.type==="requestContacts"){
+		state={loading:true, data:[]}
+	}
+	if(action.type==="loadContacts"){
+		state={loading:false, data:action.contacts}
+	}
+	return state;
+}
+
+
+function dialogs(state=[], action){
+	if(action.type==='loadDialog') {
+		state=[...action.dialog]
+	}
+	if(action.type==='newMessage') {
+		state=[...state, action.message];
+	}
+	return state;
+}
+
+
+const Reducers=combineReducers({dialogs, contacts, sender, receiver});
 
 export default Reducers;
