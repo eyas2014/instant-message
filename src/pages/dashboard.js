@@ -8,6 +8,7 @@ import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 import { connect } from 'react-redux';
 import spinner from '../images/spinner.gif';
+import quickMessage from '../images/quickMessage.jpg';
 
 const styles={
 	background: {
@@ -39,7 +40,7 @@ const styles={
 		overflowY: "scroll"
 	},
 	spinner: {
-		width: '20%',
+		width: '40%',
 		margin: 'auto',
 		marginTop: '20%',
 		height: 'auto'
@@ -87,7 +88,7 @@ class App extends Component {
 																selected={this.selected}
 																pending={pending}>
 													 </DialogBox>}
-								{loading==='empty'&&<p>empty</p>}
+								{loading==='empty'&&<img src={quickMessage} className={classes.spinner} alt="default"></img>}
 								{this.state.numberSelected?<MessageControl cancelSelect={this.cancelSelect.bind(this)}></MessageControl>:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>

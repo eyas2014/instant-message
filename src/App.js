@@ -24,9 +24,6 @@ const theme = createMuiTheme({
 
 class App extends Component {
   componentDidMount(){
-      console.log("i tis workingx");
-
-
   }
   render() {
     return (
