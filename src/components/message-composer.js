@@ -61,8 +61,10 @@ const styles={
 
 class MessageComposer extends Component {
 	send(){
-		const {sender, receiver}=this.props;
-		this.props.dispatch(sendMessage({message:this.message.value, sender, receiver}));
+		const {sender, receiver, messageId}=this.props;
+		this.props.dispatch({type: 'scrollStart'});
+		this.props.dispatch(sendMessage({message:this.message.value, sender, receiver, id: messageId}));
+		this.message.value=null;
 	}
 
 	render(){
@@ -127,7 +129,9 @@ class MessageComposer extends Component {
 
 function mapStateToProps(state){
 	return {sender: state.sender,
-			receiver: state.receiver}
+			receiver: state.receiver,
+			messageId: state.dialogs.data.length
+			}
 }
 
 

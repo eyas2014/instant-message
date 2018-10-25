@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
+import {deleteMessage} from '../lib/actions';
 
 const styles={
 	root: {
@@ -33,15 +35,31 @@ const styles={
 
 
 class Message extends Component {
+	delete(){
+		const {messages, sender, receiver, dispatch}=this.props;
+		var list=messages.reduce((accumulator, currentValue, currentIndex)=>{
+			if(currentValue.selected) accumulator.push(true);
+			else accumulator.push(false);
+			return accumulator
+		}, []);
+		dispatch(deleteMessage(list, sender, receiver));
+
+	}
+
+	cancelSelect(){
+		this.props.dispatch({type: 'cancelSelect'});
+
+	}
+
 	render(){
-		const {classes, cancelSelect}=this.props;
+		const {classes}=this.props;
 		return (
 			<div className={classes.root}>
 				<div className={classes.wrapperLeft}>
 				    <Button variant="contained" className={classes.control}>
 				       Forward
 				    </Button>
-				    <Button variant="contained" className={classes.control}>
+				    <Button variant="contained" onClick={this.delete.bind(this)} className={classes.control}>
 				       Delete
 				    </Button>
 				    <Button variant="contained" className={classes.control}>
@@ -49,16 +67,24 @@ class Message extends Component {
 				    </Button>
 	      		</div>
 	      		<div className={classes.wrapperRight}>
-				    <Button onClick={cancelSelect} className={classes.cancel}>
+				    <Button onClick={this.cancelSelect.bind(this)} className={classes.cancel}>
 				        Cancel
 				    </Button>
 	      		</div>
 		</div>)
+	}
+}
 
+function mapStateToProps(state){
+	return {
+		messages: state.dialogs.data,
+		sender: state.sender,
+		receiver: state.receiver
 	}
 
 
 }
 
 
-export default withStyles(styles)(Message);
+
+export default connect(mapStateToProps)(withStyles(styles)(Message));

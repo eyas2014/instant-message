@@ -17,9 +17,9 @@ export function sendMessage(e){
 	        },
 	        redirect: "follow", 
 	        referrer: "no-referrer", 
-	        body: JSON.stringify({message: message.message, date: message.date, sender:e.sender, receiver: e.receiver})
+	        body: JSON.stringify({message: message.message, date: message.date, sender:e.sender, receiver: e.receiver, id: e.id})
 		}).then(()=>{
-			dispatch({type: 'newMessageFinish'});
+			dispatch({type: 'newMessageFinish', id:e.id});
 		})
 	}
 }
@@ -73,4 +73,31 @@ export function loadDialog(conversation){
 						dispatch({type: 'loadDialog', dialog: data})
 					})
 	}
+}
+
+export function deleteMessage(list, sender, receiver){
+	return function(dispatch){
+		dispatch({type: 'deleteMessageStart'})
+		return fetch('http://localhost:3000/deleteMessage',{
+						method: "POST", 
+				        mode: "cors", 
+				        cache: "no-cache", 
+				        credentials: "same-origin", 
+				        headers: {
+				            "Content-Type": "application/json; charset=utf-8",	       
+				        },
+				        redirect: "follow", 
+				        referrer: "no-referrer", 
+				        body: JSON.stringify({list, sender, receiver})
+				    })
+					.then((response)=>{
+						dispatch({type: 'deleteMessageFinish'})
+						}
+					)
+	}
+
+
+
+
+
 }

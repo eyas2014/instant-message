@@ -78,18 +78,19 @@ app.post('/getContacts', function(req, res){
 
 
 app.post('/sendMessage', function(req, res){
-	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
+	const {sender, receiver, message, date, id}=req.body;
+	var name=sender>receiver?receiver+'-'+sender : sender+'-'+receiver;
 	var messagesFile= `./database/${name}.json`;
 	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
 		var messages=JSON.parse(target);
-		messages.push({sender: req.body.sender, message: req.body.message, date: req.body.date});
+		messages.push({sender, message, date});
 		fs.writeFile(messagesFile, 
 					 JSON.stringify(messages), 
 					 {encoding: 'utf8'}, 
 					 ()=>{
 						console.log("message added successfully");
 						setTimeout(function(){
-							res.send(JSON.stringify({success: true}));																			
+							res.send(JSON.stringify({id}));																			
 					 }, 5000);
 		});
 	});
@@ -97,8 +98,25 @@ app.post('/sendMessage', function(req, res){
 })
 
 
-function writeToFile(fileName, content, successMessage){
-	
-}
+app.post('/deleteMessage', function(req, res){
+	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
+	var messagesFile= `./database/${name}.json`;
+	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
+		var messages=JSON.parse(target);
+		var deletedMessages=req.body.list.reduce((acc, cur, index)=>{
+			if(!cur)acc.push(messages[index]);
+			return acc;
+		}, []);
+		fs.writeFile(messagesFile, 
+					 JSON.stringify(deletedMessages), 
+					 {encoding: 'utf8'}, 
+					 ()=>{
+						console.log("message deleted successfully");
+						setTimeout(function(){
+							res.send(JSON.stringify({success: true}));																			
+					 }, 5000);
+		});
+	});
+})
 
 app.listen(port, function(){console.log(`app is listening at port${port}`)});

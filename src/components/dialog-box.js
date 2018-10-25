@@ -15,28 +15,23 @@ const styles={
 }
 
 class DialogBox extends Component {
-	componentDidUpdate(){
+	componentDidMount(){
 		this.refs.dialogBox.scrollTop=this.refs.dialogBox.scrollHeight
 	}
-
+	componentDidUpdate(){
+		if(this.props.scrollBox){
+			this.refs.dialogBox.scrollTop=this.refs.dialogBox.scrollHeight;
+			this.props.dispatch({type: 'scrollEnd'});
+		}
+	}
 
 	render(){
-		const {classes, messages, selected, toggleMessage, pending}= this.props;
+		const {classes, messages}= this.props;
 		return (
-		<div className={classes.root} ref="dialogBox">
-			{messages.slice(0, messages.length-pending).map((item,index)=>{
-				return (<Message toggleMessage={toggleMessage} 
-								 message={{...item, id: index}} 
-								 key={index} 
-								 selected={selected[index]}>
-						</Message>)
-			})}
-			{messages.slice(messages.length-pending).map((item,index)=>{
-				return (<Message toggleMessage={toggleMessage} 
-								 message={{...item, id: index, loading: true}} 
-								 key={index} 
-								 selected={selected[index]}
-								 pending>
+		<div className={classes.root} ref="dialogBox" >
+			{messages.map((item,index)=>{
+				return (<Message message={{...item, id: index}} 
+								 key={index}>
 						</Message>)
 			})}
 		</div>)
@@ -44,5 +39,11 @@ class DialogBox extends Component {
 
 }
 
-export default withStyles(styles)(DialogBox);
+
+function mapStateTopProps(state){
+	return {scrollBox: state.scrollBox}
+}
+
+
+export default connect(mapStateTopProps)(withStyles(styles)(DialogBox));
 

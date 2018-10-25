@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import dolphin from '../images/dolphin.png';
 import IconCheckCircle from '@material-ui/icons/CheckCircle';
 import spinner from '../images/spinner.gif';
+import { connect } from 'react-redux';
 
 const styles={
 	tick: {
@@ -72,23 +73,24 @@ const styles={
 
 class Message extends Component {
 
-	selectMessage(){
-		if(this.props.selected) this.props.toggleMessage({status:false, id: this.props.message.id});
-		else this.props.toggleMessage({status:true, id: this.props.message.id});
+	selectMessage(id){
+		const {dispatch, message}=this.props;
+		if(message.selected) dispatch({type:'deselectMessage', id:message.id});
+		else dispatch({type:'selectMessage', id:message.id});
 	}
 
 
 	render(){
-		const {message, classes, selected, pending}= this.props;
+		const {message, classes}= this.props;
 		return (
 		<div>
-			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={selected?classes.greyBackground:classes.brightBackground}>
-				<Grid item xs={1}   className={selected?classes.selectedTick:classes.tick}>
+			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={message.selected?classes.greyBackground:classes.brightBackground}>
+				<Grid item xs={1}   className={message.selected?classes.selectedTick:classes.tick}>
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>
 				<Grid item  xs={1} >
 					<div>
-						{pending?<img src={spinner} className={classes.spinner} alt="spinner"></img>
+						{message.pending?<img src={spinner} className={classes.spinner} alt="spinner"></img>
 								:<img src={dolphin} className={classes.messageIcon} alt='logo'></img>}
 					</div>
 				</Grid>
@@ -110,5 +112,4 @@ class Message extends Component {
 
 }
 
-
-export default withStyles(styles)(Message);
+export default connect()(withStyles(styles)(Message));
