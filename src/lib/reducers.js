@@ -108,7 +108,13 @@ function numberSelected(state=0, action){
 	return state
 }
 
+function searchDialog(state='', action){
+	if(action.type=="searchDialog"){
+		state=action.str}
+	return state;
+}
 
-const Reducers=combineReducers({dialogs, contacts, sender, receiver, scrollBox, numberSelected});
+
+const Reducers=combineReducers({dialogs, contacts, sender, receiver, scrollBox, numberSelected, searchDialog});
 
 export default Reducers;

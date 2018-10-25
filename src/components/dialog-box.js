@@ -26,13 +26,16 @@ class DialogBox extends Component {
 	}
 
 	render(){
-		const {classes, messages}= this.props;
+		const {classes, messages, searchStr}= this.props;
 		return (
 		<div className={classes.root} ref="dialogBox" >
 			{messages.map((item,index)=>{
-				return (<Message message={{...item, id: index}} 
+				if(item.message.indexOf(searchStr)==-1) return null;
+				else {
+					return (<Message message={{...item, id: index}} 
 								 key={index}>
 						</Message>)
+				}
 			})}
 		</div>)
 	}
@@ -41,7 +44,8 @@ class DialogBox extends Component {
 
 
 function mapStateTopProps(state){
-	return {scrollBox: state.scrollBox}
+	return {scrollBox: state.scrollBox,
+			searchStr: state.searchDialog}
 }
 
 

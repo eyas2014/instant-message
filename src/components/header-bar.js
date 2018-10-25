@@ -9,10 +9,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
+import {connect} from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const styles={
 	floatRight: {
 		minHeight: '0px',
+		paddingTop:'5px',
 		float: 'right'
 	},
 	floatLeft: {
@@ -34,27 +39,43 @@ const styles={
 	},
 	noShadow: {
 		boxShadow: "none"
+	},
+	search: {
+		margin: "0px",
+		height: "34px",
+		overflow: "hidden",
+		'& input': {
+			padding: '10px'
+		}	
+	},
+	iconButton: {
+		paddingLeft: '5px'
+	},
+	button: {
+		marginLeft: '20px'
+
 	}
 }
 
 class HeaderBar extends Component {
 	logout(){
-		alert('logout');
 		fetch("http://localhost:3000/logout").then((response)=>{
 			return response.json()
 		}).then((data)=>{
-			console.log(data);
 			if(data.loggedOut) {
-				alert('yes');
 				window.location.href="/login";
 			}
 		})
+	}
+
+	handleChange(e){
+		this.props.dispatch({type: 'searchDialog', str: e.target.value})
 
 	}
 
 
 	render(){
-		const { classes } = this.props;
+		const { classes, receiver } = this.props;
 		return (
 			<AppBar position='static' classes={{root: classes.noShadow}}>
 				<Grid container>
@@ -71,21 +92,31 @@ class HeaderBar extends Component {
 				        <Grid item xs={9}>
 					        <Toolbar  classes={{root: classes.floatLeft}} >
 					          <Typography variant='inherit' className={classes.typography1}>
-					            Contact
+					            Contact:
 					          </Typography>
 					          <Typography variant='inherit'  className={classes.typography2}>
-					            friend
+					            {receiver}
 					          </Typography>
 					        </Toolbar>
 					        <Toolbar   classes={{root: classes.floatRight}} >
-						        <Button color="inherit" variant="outlined" onClick={this.logout}>Logout
+								<TextField placeholder="search"
+											variant="filled"
+											margin="normal"
+											classes={{root: classes.search}}
+											onChange={(e)=>this.handleChange(e)}
+								          InputProps={{
+								          	className: classes.iconButton,
+								            startAdornment: (
+								              <InputAdornment>
+								                <IconButton aria-label="search" classes={{root: classes.iconButton}}>
+													<SearchIcon />
+								                </IconButton>
+								              </InputAdornment>
+								            ),
+								          }}>
+								</TextField>
+								<Button color="inherit" variant="outlined" onClick={this.logout} className={classes.button}>Logout
 						        </Button>
-						        <IconButton aria-label="Menu" color="inherit">
-						        	<SearchIcon />
-						        </IconButton>
-						        <IconButton aria-label="Menu" color="inherit">
-						        	<MoreVertIcon />
-						        </IconButton>
 					    	</Toolbar>
 				        </Grid>
 				    </Grid>
@@ -95,54 +126,11 @@ class HeaderBar extends Component {
 
 }
 
-export default withStyles(styles)(HeaderBar);
+function mapStateToProps(state){
+	return {receiver: state.receiver}
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(HeaderBar));
 
 
 
-// import React from 'react';
-// import PropTypes from 'prop-types';
-// import { withStyles } from '@material-ui/core/styles';
-// import AppBar from '@material-ui/core/AppBar';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
-// import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
-
-// const styles = {
-//   root: {
-//     flexGrow: 1,
-//   },
-//   grow: {
-//     flexGrow: 1,
-//   },
-//   menuButton: {
-//     marginLeft: -12,
-//     marginRight: 20,
-//   },
-// };
-
-// function ButtonAppBar(props) {
-//   const { classes } = props;
-//   return (
-//     <div className={classes.root}>
-//       <AppBar position="static">
-//         <Toolbar>
-//           <IconButton className={classes.menuButton} color="primary" aria-label="Menu">
-//             <MenuIcon />
-//           </IconButton>
-//           <Typography variant="h6" color="inherit" className={classes.grow}>
-//             News
-//           </Typography>
-//           <Button color="inherit">Login</Button>
-//         </Toolbar>
-//       </AppBar>
-//     </div>
-//   );
-// }
-
-// ButtonAppBar.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
-
-// export default withStyles(styles)(ButtonAppBar);
