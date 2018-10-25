@@ -114,7 +114,13 @@ function searchDialog(state='', action){
 	return state;
 }
 
+function searchContacts(state='', action){
+	if(action.type=="searchContacts"){
+		state=action.str}
+	return state;
+}
 
-const Reducers=combineReducers({dialogs, contacts, sender, receiver, scrollBox, numberSelected, searchDialog});
+
+const Reducers=combineReducers({dialogs, contacts, sender, receiver, scrollBox, numberSelected, searchDialog, searchContacts});
 
 export default Reducers;

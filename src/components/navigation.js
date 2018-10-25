@@ -35,6 +35,9 @@ class Navigation extends Component {
 		this.props.dispatch(updateContacts({clientName: 'Yaming'}));
 	}
 
+	handleChange(e){
+		this.props.dispatch({type: 'searchContacts', str: e.target.value})
+	}
 
 	render(){
 		const { classes, loading } =this.props;
@@ -44,6 +47,7 @@ class Navigation extends Component {
 							variant="outlined"
 							margin="normal"
 							classes={{root: classes.search}}
+							onChange={(e)=>this.handleChange(e)}
 				          InputProps={{
 				          	className: classes.iconButton,
 				            startAdornment: (

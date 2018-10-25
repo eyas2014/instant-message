@@ -45,26 +45,26 @@ class ContactTag extends Component {
 	}
 
 	render(){
-		const {contacts, classes}= this.props;
+		const {contacts, classes, searchStr}= this.props;
 		return (      
 		<List component="nav">{contacts.map((item, index)=>{
-			return (	        
-			<ListItem button classes={{root: classes.root}} key={index} onClick={()=>{this.handleClick(item.name)}}>
-	          <ListItemIcon>
-	            <SmsIcon />
-	          </ListItemIcon>
-	          <div className={classes.container}>
-		          <span  className={classes.user}>{item.name}</span> 
-		          <span  className={classes.date}>{item.date}</span>
-		          <br />
-		          <span className={classes.lastMessage}>{item.lastMessage.Name+': '+item.lastMessage.message}</span>
-	          </div>
-	        </ListItem>)
-
-			})
-		}</List>)
-
-
+				if(item.name.indexOf(searchStr)==-1)return null;
+				else {
+					return (	        
+					<ListItem button classes={{root: classes.root}} key={index} onClick={()=>{this.handleClick(item.name)}}>
+			          <ListItemIcon>
+			            <SmsIcon />
+			          </ListItemIcon>
+			          <div className={classes.container}>
+				          <span  className={classes.user}>{item.name}</span> 
+				          <span  className={classes.date}>{item.date}</span>
+				          <br />
+				          <span className={classes.lastMessage}>{item.lastMessage.Name+': '+item.lastMessage.message}</span>
+			          </div>
+			        </ListItem>)
+			    }
+			})}
+		</List>)
 	}
 
 }
@@ -73,7 +73,8 @@ class ContactTag extends Component {
 const mapStateToProps=function (state){
 	return {contacts: state.contacts.data,
 			receiver: state.receiver,
-			sender: state.sender
+			sender: state.sender,
+			searchStr: state.searchContacts
 		}
 }
 
