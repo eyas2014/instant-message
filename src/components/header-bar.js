@@ -3,7 +3,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -115,7 +114,7 @@ class HeaderBar extends Component {
 								            ),
 								          }}>
 								</TextField>
-								<Button color="inherit" variant="outlined" onClick={this.logout} className={classes.button}>Logout
+								<Button color="inherit" onClick={this.logout} className={classes.button}>Logout
 						        </Button>
 					    	</Toolbar>
 				        </Grid>

@@ -3,15 +3,8 @@ const express=require("express");
 const app=express();
 const port=3001;
 var bodyParser = require('body-parser');
-var account;
 var fs=require('fs');
 var crypto=require('crypto');
-
-fs.readFile('./database/account.json', {encoding: 'utf8'}, function(err, target){
-	account=JSON.parse(target);
-});
-
-
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -23,28 +16,33 @@ app.get('/prelogin', function(req, res){
 });
 
 app.post('/authenticate', function(req, res){
-	crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-		if(account[req.body.userName]===key.toString('base64')){
-			res.cookie("sessionID", req.body.userName);
-			res.send(JSON.stringify({validated: true}));
-		}else{
-			res.send(JSON.stringify({validated: false}));
-		};
+	fs.readFile('./database/account.json', {encoding: 'utf8'}, function(err, target){
+		crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
+			if(account[req.body.userName]===key.toString('base64')){
+				res.cookie("sessionID", req.body.userName);
+				res.send(JSON.stringify({validated: true}));
+			}else{
+				res.send(JSON.stringify({validated: false}));
+			};
+		});
 	});
 });
 
 app.post('/registration', function(req, res){
-	if(account[req.body.userName]){
-		res.send(JSON.stringify({success: false}));
-	}else{
-		crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-			account[req.body.userName]=key.toString('base64');
-			fs.writeFile('./database/account.json', JSON.stringify(account), {encoding: 'utf8'}, ()=>{
-				res.send(JSON.stringify({success: true}));
-			  	console.log(`created an account for: ${req.body.userName}`)
+	fs.readFile('./database/account.json', {encoding: 'utf8'}, function(err, target){
+		var account=JSON.parse(target);
+		if(account[req.body.userName]){
+			res.send(JSON.stringify({success: false}));
+		}else{
+			crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
+				account[req.body.userName]=key.toString('base64');
+				fs.writeFile('./database/account.json', JSON.stringify(account), {encoding: 'utf8'}, ()=>{
+					res.send(JSON.stringify({success: true}));
+				  	console.log(`created an account for: ${req.body.userName}`)
+				});
 			});
-		});
-	}
+		}
+	})
 });
 
 
