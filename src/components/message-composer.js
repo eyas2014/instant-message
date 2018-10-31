@@ -11,8 +11,7 @@ import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
 import dolphin from '../images/dolphin.png';
 import { connect } from 'react-redux';
-import {sendMessage} from '../lib/actions'
-
+import CloseTimer from './close-timer';
 
 const styles={
 	wrapper: {
@@ -55,15 +54,21 @@ const styles={
 	messageInput: {
 		color: 'red'
 
+	},
+
+	timer: {
+		paddingLeft: '20px',
+		fontSize: '30px'
 	}
+
 
 };
 
 class MessageComposer extends Component {
 	send(){
-		const {sender, receiver, messageId}=this.props;
-		this.props.dispatch({type: 'scrollStart'});
-		this.props.dispatch(sendMessage({message:this.message.value, sender, receiver, id: messageId}));
+		const {sender, dispatch, receiver}=this.props;
+		dispatch({type: 'scrollStart'});
+		dispatch({type: 'newMessage', sender, deleteTimer: 30, message: this.message.value, receiver});
 		this.message.value=null;
 	}
 
@@ -113,8 +118,11 @@ class MessageComposer extends Component {
 					</div>
 				</Grid>
 				<Grid item xs={1}>
-					<div>
-						<img src={dolphin} alt='logo' className={classes.iconImage}></img>
+					<div className={classes.timer}>
+						<IconButton>
+							<CloseTimer></CloseTimer>
+						</IconButton>
+
 					</div>
 				</Grid>
 			</Grid>
@@ -129,9 +137,7 @@ class MessageComposer extends Component {
 
 function mapStateToProps(state){
 	return {sender: state.sender,
-			receiver: state.receiver,
-			messageId: state.dialogs.data.length
-			}
+			receiver: state.receiver}
 }
 
 

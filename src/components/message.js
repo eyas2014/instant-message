@@ -32,7 +32,7 @@ const styles={
 	message: {
 		fontSize: '13px',
 		margin: '5px',
-		textAlign: 'left'
+		textAlign: 'center'
 	},
 
 	messageIcon: {
@@ -81,7 +81,9 @@ class Message extends Component {
 
 
 	render(){
-		const {message, classes}= this.props;
+		const {receiveTime, deleteTimer, message, sender}=this.props.message;
+		var timeLeft=deleteTimer-(this.props.currentTime.getTime()-receiveTime.getTime())/1000;
+		var classes=this.props.classes;
 		return (
 		<div>
 			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={message.selected?classes.greyBackground:classes.brightBackground}>
@@ -95,13 +97,16 @@ class Message extends Component {
 					</div>
 				</Grid>
 				<Grid item  xs={6}>
-					<p className={classes.user}>{message.sender}</p>
+					<p className={classes.user}>{sender}</p>
 					<div>
-						<p className={classes.message}>{message.message}</p>
+						<p className={classes.message}>{message}</p>
 					</div>
 				</Grid>
-				<Grid item  xs={2}>
-					<p className={classes.message}>{message.date}</p>
+				<Grid item  xs={1}>
+					<p className={classes.message}>{receiveTime.toString().substring(4, 25)}</p>
+				</Grid>
+				<Grid item  xs={1}>
+					<p className={classes.message}>{Math.floor(timeLeft/60)}:{Math.floor(timeLeft%60)}</p>
 				</Grid>
 
 			</Grid>

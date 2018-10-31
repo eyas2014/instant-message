@@ -75,10 +75,14 @@ export function loadDialog(conversation){
 	}
 }
 
-export function deleteMessage(list, sender, receiver){
-	return function(dispatch){
-		dispatch({type: 'deleteMessageStart'})
-		return fetch('http://localhost:3000/deleteMessage',{
+
+
+export function updateDialog(sender, receiver, currentTime){
+
+	if(receiver){
+		return function(dispatch){
+			dispatch({type: 'cleanDeletion', currentTime});
+			return fetch('http://localhost:3000/updateDialog',{
 						method: "POST", 
 				        mode: "cors", 
 				        cache: "no-cache", 
@@ -88,16 +92,19 @@ export function deleteMessage(list, sender, receiver){
 				        },
 				        redirect: "follow", 
 				        referrer: "no-referrer", 
-				        body: JSON.stringify({list, sender, receiver})
-				    })
-					.then((response)=>{
-						dispatch({type: 'deleteMessageFinish'})
+				        body: JSON.stringify({sender, receiver})
+					})
+					.then((response)=>{return response.json()})
+					.then((res)=>{
+						if(res.lastModified===receiver){
+							var events=res.events;
+							events.forEach((item)=>{dispatch(item)})
 						}
-					)
+					})
+		}
+	}else{
+		return {type: 'cc'}
+
 	}
-
-
-
-
 
 }

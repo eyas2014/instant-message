@@ -49,7 +49,7 @@ const styles={
 
 class App extends Component {
 	render(){
-		const { classes, messages, loading, numberSelected} =this.props;
+		const { classes, numberSelected} =this.props;
 		return (
 			<Grid container justify='center' className={classes.background}>
 				<Grid item xs={12} md={8} className={classes.fullHeight}>
@@ -60,10 +60,7 @@ class App extends Component {
 								<Navigation></Navigation>
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
-								{loading==='loading'&&<img src={spinner} className={classes.spinner} alt="spinner"></img>}
-								{loading==='loaded'&&<DialogBox messages={messages}>
-													 </DialogBox>}
-								{loading==='empty'&&<img src={quickMessage} className={classes.spinner} alt="default"></img>}
+								<DialogBox></DialogBox>
 								{numberSelected?<MessageControl></MessageControl>:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>
@@ -76,11 +73,7 @@ class App extends Component {
 }
 
 const mapStateToProps=function (state){
-	return {messages: state.dialogs.data,
-			pending: state.dialogs.pending,
-			loading: state.dialogs.loading,
-			numberSelected: state.numberSelected
-			}
+	return {numberSelected: state.numberSelected}
 }
 
 const AppWithStyles=withStyles(styles)(App);

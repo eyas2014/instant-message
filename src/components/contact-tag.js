@@ -36,10 +36,8 @@ const styles={
 
 class ContactTag extends Component {
 	handleClick(contact){
-		const {sender, receiver }= this.props;
-		if(contact!==receiver) {
+		if(contact!==this.props.receiver) {
 			this.props.dispatch({type:'updateReceiver', receiver: contact});
-			this.props.dispatch(loadDialog({receiver: contact, sender}));
 		}
 
 	}
@@ -73,9 +71,8 @@ class ContactTag extends Component {
 const mapStateToProps=function (state){
 	return {contacts: state.contacts.data,
 			receiver: state.receiver,
-			sender: state.sender,
-			searchStr: state.searchContacts
-		}
+			searchStr: state.searchContacts,
+	}
 }
 
 const contactTagWithStyles=withStyles(styles)(ContactTag);

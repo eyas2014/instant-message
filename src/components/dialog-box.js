@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Message from './message';
+import {updateDialog} from '../lib/actions';
 
 const styles={
 	root: {
@@ -15,28 +16,29 @@ const styles={
 }
 
 class DialogBox extends Component {
-	componentDidMount(){
-		this.refs.dialogBox.scrollTop=this.refs.dialogBox.scrollHeight
-	}
-	componentDidUpdate(){
-		if(this.props.scrollBox){
-			this.refs.dialogBox.scrollTop=this.refs.dialogBox.scrollHeight;
-			this.props.dispatch({type: 'scrollEnd'});
-		}
+	constructor(){
+		super();
+		this.state={currentTime: new Date()};
 	}
 
+	componentDidMount(){
+		const {sender, dispatch}= this.props;
+		setInterval(()=>{
+			var currentTime=new Date();
+			this.setState({currentTime});
+			dispatch(updateDialog(sender, this.props.receiver, currentTime ));
+		}, 1000)
+	}
+
+
 	render(){
-		const {classes, messages, searchStr}= this.props;
+		const {classes, messages}=this.props;
 		return (
 		<div className={classes.root} ref="dialogBox" >
 			{messages.map((item,index)=>{
-				if(item.message.indexOf(searchStr)==-1) return null;
-				else {
-					return (<Message message={{...item, id: index}} 
-								 key={index}>
-						</Message>)
-				}
-			})}
+				return (<Message message={item} key={index} currentTime={this.state.currentTime}>
+						</Message>)}
+			)}
 		</div>)
 	}
 
@@ -45,7 +47,10 @@ class DialogBox extends Component {
 
 function mapStateTopProps(state){
 	return {scrollBox: state.scrollBox,
-			searchStr: state.searchDialog}
+			receiver: state.receiver,
+			sender: state.sender,
+			messages: state.dialog
+		}
 }
 
 

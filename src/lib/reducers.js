@@ -40,45 +40,34 @@ function scrollBox(state=false, action){
 }
 
 
-function dialogs(state={loading: 'empty', data:[]}, action){
+function dialog(state=[], action){
 	switch(action.type){
 		case 'requestDialog':
 			state={loading:'loading', data:[]};
 			break;
 
-		case 'loadDialog':
-			var data=action.dialog.map((item)=>{
-				item.selected=false;
-				item.pending=false;
-				return item
-			});
-			state={loading:'loaded', data};
-			break;
-
-		case 'newMessageStart':
-			var newMessage={...action.message, selected: false, pending: true};
-			state={loading:'loaded', data: [...state.data, newMessage]};
-			break;
-
-		case 'newMessageFinish':
-			state.data[action.id].pending=false;
-			state={loading:'loaded', data: [...state.data]}
+		case 'newMessage':
+			const {message, deleteTimer, sender}=action;
+			const receiveTime=new Date();
+			var newMessage={message, deleteTimer, selected: false, sender, receiveTime};
+			state=[...state, newMessage];
 			break;
 
 		case 'selectMessage':
 			state.data[action.id].selected=true;
 			state={loading:'loaded', data: [...state.data]}
 			break;
+			
 		case 'deselectMessage':
 			state.data[action.id].selected=false;
 			state={loading:'loaded', data: [...state.data]}
 			break;
-		case 'deleteMessageStart': 
-			var data=state.data.map((item)=>{
-					if(item.selected) item.pending=true;
-					return item;
-				});
-			state={loading:'loaded', data};
+
+		case 'deleteMessage': 
+			state=state.reduce((acc, cur)=>{
+					if(cur.clientTime!==action.clientTime||cur.sender!==action.sender) acc.push(cur);
+					return acc;
+				}, []);
 			break;
 		case 'deleteMessageFinish': 
 			var data=state.data.reduce((acc, cur)=>{
@@ -93,6 +82,13 @@ function dialogs(state={loading: 'empty', data:[]}, action){
 					return item
 				});
 			state={loading:'loaded', data};
+			break;
+		case 'cleanDeletion':
+			state=state.reduce((acc, cur)=>{
+					var timeLeft=cur.deleteTimer*1000-(action.currentTime.getTime()-cur.receiveTime.getTime());
+					if(timeLeft>0) acc.push(cur);
+					return acc;
+				}, []);
 			break;
 	}
 
@@ -120,7 +116,15 @@ function searchContacts(state='', action){
 	return state;
 }
 
+function modifications(state=[], action){
+	if(action.type=="newMessage"||action.type=="deleteMessages") state.push(action);
+	return state
+}
 
-const Reducers=combineReducers({dialogs, contacts, sender, receiver, scrollBox, numberSelected, searchDialog, searchContacts});
+
+
+
+const Reducers=combineReducers({contacts, sender, receiver, dialog,
+						scrollBox, numberSelected, searchDialog, searchContacts, modifications});
 
 export default Reducers;

@@ -5,6 +5,11 @@ const port=3001;
 var bodyParser = require('body-parser');
 var fs=require('fs');
 var crypto=require('crypto');
+var events=[{type:"newMessage",sender:"Yaming",message:"one",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"15"},
+			{type:"newMessage",sender:"Yaming",message:"two",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"40"},
+			{type:"newMessage",sender:"Yaming",message:"three",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"6"},
+			{type:"newMessage",sender:"Yaming",message:"four",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"65"}];			
+var lastModified="Tom";
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -46,13 +51,17 @@ app.post('/registration', function(req, res){
 });
 
 
-app.post('/loadDialog', function(req, res){ 
-	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
-	fs.readFile(`./database/${name}.json`, {encoding: 'utf8'}, function(err, target){
-		setTimeout(function(){
-			res.send(target);
-		},1000)
-	});
+app.post('/updateDialog', function(req, res){ 
+	if(req.body.receiver===lastModified){
+			res.send(JSON.stringify({lastModified, events}));
+			lastModified=req.body.sender;
+			events=[];
+			console.log("sent events")
+	}
+	else {
+		res.send(JSON.stringify({lastModified}));
+
+	}
 });
 
 
