@@ -22,14 +22,18 @@ class DialogBox extends Component {
 	}
 
 	componentDidMount(){
-		const {sender, dispatch}= this.props;
-		setInterval(()=>{
-			var currentTime=new Date();
+		const {sender, dispatch, putEvents}= this.props;
+		this.intervalId=setInterval(()=>{
+			var currentTime=new Date().getTime();
 			this.setState({currentTime});
-			dispatch(updateDialog(sender, this.props.receiver, currentTime ));
-		}, 1000)
+			dispatch({type:'removeTimeout', currentTime});
+			dispatch(updateDialog(sender, this.props.receiver, []));
+		}, 10000)
 	}
 
+	componentWillUnmount(){
+		clearInterval(this.intervalId)
+	}
 
 	render(){
 		const {classes, messages}=this.props;
@@ -49,7 +53,7 @@ function mapStateTopProps(state){
 	return {scrollBox: state.scrollBox,
 			receiver: state.receiver,
 			sender: state.sender,
-			messages: state.dialog
+			messages: state.dialog,
 		}
 }
 

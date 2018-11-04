@@ -5,14 +5,12 @@ const port=3001;
 var bodyParser = require('body-parser');
 var fs=require('fs');
 var crypto=require('crypto');
-var events=[{type:"newMessage",sender:"Yaming",message:"one",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"15"},
-			{type:"newMessage",sender:"Yaming",message:"two",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"40"},
-			{type:"newMessage",sender:"Yaming",message:"three",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"6"},
-			{type:"newMessage",sender:"Yaming",message:"four",clientTime:"123456", serverTime:"14:29:34 9/25/2018", deleteTimer:"65"}];			
-var lastModified="Tom";
+var events={};
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+var account={};
 
 app.get('/prelogin', function(req, res){
 	if(req.cookies.sessionID) res.send({validated: true});
@@ -21,21 +19,17 @@ app.get('/prelogin', function(req, res){
 });
 
 app.post('/authenticate', function(req, res){
-	fs.readFile('./database/account.json', {encoding: 'utf8'}, function(err, target){
-		crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-			if(account[req.body.userName]===key.toString('base64')){
-				res.cookie("sessionID", req.body.userName);
-				res.send(JSON.stringify({validated: true}));
-			}else{
-				res.send(JSON.stringify({validated: false}));
-			};
-		});
+	crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
+		if(account[req.body.userName]===key.toString('base64')){
+			res.cookie("sessionID", req.body.userName);
+			res.send(JSON.stringify({validated: true}));
+		}else{
+			res.send(JSON.stringify({validated: false}));
+		};
 	});
 });
 
 app.post('/registration', function(req, res){
-	fs.readFile('./database/account.json', {encoding: 'utf8'}, function(err, target){
-		var account=JSON.parse(target);
 		if(account[req.body.userName]){
 			res.send(JSON.stringify({success: false}));
 		}else{
@@ -47,22 +41,74 @@ app.post('/registration', function(req, res){
 				});
 			});
 		}
-	})
 });
-
 
 app.post('/updateDialog', function(req, res){ 
-	if(req.body.receiver===lastModified){
-			res.send(JSON.stringify({lastModified, events}));
-			lastModified=req.body.sender;
-			events=[];
-			console.log("sent events")
-	}
-	else {
-		res.send(JSON.stringify({lastModified}));
+	var getEvents=events[req.body.sender]||[];
+	var respondEvents=[];
+	var currentTime=new Date();
+	var putEvents=events[req.body.receiver]||[];
 
-	}
+	req.body.putEvents.reduce((acc, cur)=>{
+		if(cur.type==="sendNewMessage"){
+			respondEvents.push({type:'sentToServer', clientTime: cur.clientTime, sender: cur.sender});
+			putEvents.push(cur);
+		}
+		else if(cur.type==="deleteSuccess"){
+			acc.push(cur);
+		}else if (cur.type==="deleteMessage"&&cur.sender===req.body.sender){
+			var deleteElement=events[req.body.receiver].find((el)=>{
+				return el.type==='newMessage'&&el.clientTime===cur.clientTime});
+			if(!deleteElement||!deleteElement.serverTime) {
+				respondEvents.push({type:'deleteSuccess', sender: cur.sender, clientTime: cur.clientTime});
+			}
+		}else if(cur.type==="deleteMessage"&&cur.sender===req.body.receiver){
+			events[req.body.sender]=events[req.body.sender].filter((el)=>{
+				return el.type==='newMessage'&&el.clientTime!==element.clientTime
+			});
+			acc.push(cur);
+		}
+		return acc;
+
+	}, putEvents)
+ 
+	events[req.body.sender]=getEvents.reduce((acc, cur)=>{
+		if (cur.type==='sendNewMessage'&&!cur.serverTime){
+			cur.serverTime=new Date().getTime();
+			acc.push(cur);
+			putEvents.push({type:'sentToReceiver', clientTime: cur.clientTime});
+			respondEvents.push(Object.assign(cur, {type: 'receiveNewMessage'}));
+		}
+		if (cur.type==='sentToReceiver'){
+			respondEvents.push(cur);
+		}
+		return acc;
+	},[]);
+
+	events[req.body.receiver]=putEvents; 
+	res.send(JSON.stringify(respondEvents));
 });
+
+app.post('/refetch', function(req, res){
+	respondEvents=[];
+	if(!events[req.body.sender])events[req.body.sender]=[];
+	events[req.body.sender].reduce((acc, cur)=>{
+		if(acc.type==='newMessage'&&serverTime){
+			var currentTime=new Date();
+			var timePassed=currentTime.getTime()-cur.serverTime.getTime();
+			var timeLeft=cur.deleteTimer-timePassed/1000;
+			if(timeLeft>0){ 
+				acc.deleteTimer=timeLeft;
+				acc.push(cur);
+			}
+		}
+		return acc;
+	}, respondEvents);
+	events[req.body.sender]=respondEvents;
+});
+
+
+
 
 
 app.get('/logout', function(req, res){
@@ -71,59 +117,22 @@ app.get('/logout', function(req, res){
 });
 
 app.post('/getContacts', function(req, res){
-	var contactsFile= `./database/${req.body.clientName}-contact.json`;
+	var contactsFile= `./database/${req.body.sender}-contact.json`;
 	fs.readFile(contactsFile, {encoding: 'utf8'}, function(err, target){
-		var json=JSON.parse(target)
-		setTimeout(function(){
-			console.log("sending contacts");
-			res.send(target);
-		}, 1000)
-		
+		if(target){
+			var json=JSON.parse(target)
+			setTimeout(function(){
+				console.log("sending contacts");
+				res.send(target);
+			}, 1000)
+		}else{
+			console.log('failed to read contacts of');
+		}
+
 	});
 	
 });
 
 
-app.post('/sendMessage', function(req, res){
-	const {sender, receiver, message, date, id}=req.body;
-	var name=sender>receiver?receiver+'-'+sender : sender+'-'+receiver;
-	var messagesFile= `./database/${name}.json`;
-	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
-		var messages=JSON.parse(target);
-		messages.push({sender, message, date});
-		fs.writeFile(messagesFile, 
-					 JSON.stringify(messages), 
-					 {encoding: 'utf8'}, 
-					 ()=>{
-						console.log("message added successfully");
-						setTimeout(function(){
-							res.send(JSON.stringify({id}));																			
-					 }, 5000);
-		});
-	});
-
-})
-
-
-app.post('/deleteMessage', function(req, res){
-	var name=req.body.sender>req.body.receiver?req.body.receiver+'-'+req.body.sender : req.body.sender+'-'+req.body.receiver;
-	var messagesFile= `./database/${name}.json`;
-	fs.readFile(messagesFile, {encoding: 'utf8'}, function(err, target){
-		var messages=JSON.parse(target);
-		var deletedMessages=req.body.list.reduce((acc, cur, index)=>{
-			if(!cur)acc.push(messages[index]);
-			return acc;
-		}, []);
-		fs.writeFile(messagesFile, 
-					 JSON.stringify(deletedMessages), 
-					 {encoding: 'utf8'}, 
-					 ()=>{
-						console.log("message deleted successfully");
-						setTimeout(function(){
-							res.send(JSON.stringify({success: true}));																			
-					 }, 5000);
-		});
-	});
-})
 
 app.listen(port, function(){console.log(`app is listening at port${port}`)});

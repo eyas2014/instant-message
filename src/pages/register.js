@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
 
 const Image=styled.img`
 	height: 200px;
@@ -17,7 +18,7 @@ const P=styled.p`
 	color: red;
 `;
 
-export default class Register extends Component {
+class Register extends Component {
 	constructor(){
 		super();
 		this.state={};
@@ -48,8 +49,8 @@ export default class Register extends Component {
 		}).then((response)=>{
 			return response.json()
 		}).then((data)=>{
-			console.log(data);
 			if(data.success) {
+				this.props.dispatch({type: 'login', username: this.state.userName});
 				window.location.href="http://localhost:3000#/dashboard";
 			}
 			else this.setState({accountExist: true});
@@ -94,8 +95,7 @@ export default class Register extends Component {
 			   			</Button>
 			        </form>
 				</div>)
-
 	}
-
-
 }
+
+export default connect()(Register);

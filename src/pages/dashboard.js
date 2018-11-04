@@ -7,8 +7,6 @@ import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 import { connect } from 'react-redux';
-import spinner from '../images/spinner.gif';
-import quickMessage from '../images/quickMessage.jpg';
 
 const styles={
 	background: {
@@ -48,6 +46,7 @@ const styles={
 }
 
 class App extends Component {
+
 	render(){
 		const { classes, numberSelected} =this.props;
 		return (
@@ -61,7 +60,8 @@ class App extends Component {
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
 								<DialogBox></DialogBox>
-								{numberSelected?<MessageControl></MessageControl>:<MessageComposer></MessageComposer>}
+								{numberSelected?<MessageControl></MessageControl>
+												:<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>
 					</div>
@@ -73,7 +73,8 @@ class App extends Component {
 }
 
 const mapStateToProps=function (state){
-	return {numberSelected: state.numberSelected}
+	return {numberSelected: state.numberSelected,
+			sender: state.sender}
 }
 
 const AppWithStyles=withStyles(styles)(App);

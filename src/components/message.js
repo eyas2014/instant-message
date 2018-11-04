@@ -75,14 +75,22 @@ class Message extends Component {
 
 	selectMessage(id){
 		const {dispatch, message}=this.props;
-		if(message.selected) dispatch({type:'deselectMessage', id:message.id});
-		else dispatch({type:'selectMessage', id:message.id});
+		dispatch({type:'toggleMessage', sender: message.sender, clientTime: message.clientTime});
 	}
 
 
 	render(){
-		const {receiveTime, deleteTimer, message, sender}=this.props.message;
-		var timeLeft=deleteTimer-(this.props.currentTime.getTime()-receiveTime.getTime())/1000;
+		const {timerStart, deleteTimer, message, sender, clientTime, status}=this.props.message;
+		var timeLeft;
+		if(deleteTimer==='forever')timeLeft='00:00';
+		else if(timerStart){ 
+			timeLeft=deleteTimer-(this.props.currentTime-timerStart)/1000;
+			timeLeft=Math.floor(timeLeft/60)+':'+Math.floor(timeLeft%60);
+		}
+		else if(status==='composed') timeLeft='Sending';
+		else if(status==='deleted') timeLeft='Deleting';
+		else timeLeft=Math.floor(deleteTimer/60)+':'+Math.floor(deleteTimer%60);
+
 		var classes=this.props.classes;
 		return (
 		<div>
@@ -92,8 +100,7 @@ class Message extends Component {
 				</Grid>
 				<Grid item  xs={1} >
 					<div>
-						{message.pending?<img src={spinner} className={classes.spinner} alt="spinner"></img>
-								:<img src={dolphin} className={classes.messageIcon} alt='logo'></img>}
+						<img src={dolphin} className={classes.messageIcon} alt='logo'></img>
 					</div>
 				</Grid>
 				<Grid item  xs={6}>
@@ -103,10 +110,10 @@ class Message extends Component {
 					</div>
 				</Grid>
 				<Grid item  xs={1}>
-					<p className={classes.message}>{receiveTime.toString().substring(4, 25)}</p>
+					<p className={classes.message}>{clientTime.toString().substring(16, 25)}</p>
 				</Grid>
 				<Grid item  xs={1}>
-					<p className={classes.message}>{Math.floor(timeLeft/60)}:{Math.floor(timeLeft%60)}</p>
+					<p className={classes.message}>{timeLeft}</p>
 				</Grid>
 
 			</Grid>

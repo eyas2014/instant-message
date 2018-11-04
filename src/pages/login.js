@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
 
 const Image=styled.img`
 	height: 200px;
@@ -17,7 +18,7 @@ const P=styled.p`
 	color: red;
 `;
 
-export default class App extends Component {
+class Login extends Component {
 	constructor(){
 		super();
 		this.state={incorrectPassword: false}
@@ -38,9 +39,8 @@ export default class App extends Component {
 		}).then((response)=>{
 			return response.json()
 		}).then((data)=>{
-			console.log(data);
 			if(data.validated) {
-
+				this.props.dispatch({type: 'login', username: this.state.userName});
 				window.location.href="http://localhost:3000#/dashboard";
 			}
 			else this.setState({incorrectPassword: true});
@@ -58,8 +58,7 @@ export default class App extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.validated) {
-
-				window.location.href="http://localhost:3000#/dashboard";
+				//window.location.href="http://localhost:3000#/dashboard"; disable prelogin to temporarily allow two users in one computer.
 			}
 		})
 	}
@@ -95,8 +94,13 @@ export default class App extends Component {
 			   			<p><a href="#register">No, I don't have an account</a></p>
 			        </form>
 				</div>)
-
 	}
-
-
 }
+
+function mapStateToProps(state){
+	return {
+		sender: state.sender
+	}
+}
+
+export default connect(mapStateToProps)(Login);

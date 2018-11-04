@@ -9,9 +9,9 @@ import TextField from '@material-ui/core/TextField';
 import emotionPic from '../images/emojisprite_0.png';
 import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
-import dolphin from '../images/dolphin.png';
 import { connect } from 'react-redux';
 import CloseTimer from './close-timer';
+import {updateDialog} from '../lib/actions';
 
 const styles={
 	wrapper: {
@@ -65,11 +65,26 @@ const styles={
 };
 
 class MessageComposer extends Component {
+	constructor(){
+		super();
+		this.deleteTimer=30;
+	}
+
+
 	send(){
 		const {sender, dispatch, receiver}=this.props;
 		dispatch({type: 'scrollStart'});
-		dispatch({type: 'newMessage', sender, deleteTimer: 30, message: this.message.value, receiver});
+		var clientTime=new Date();
+		var ev={type:'sendNewMessage',message: this.message.value, deleteTimer: this.deleteTimer, 
+					sender,  receiver, clientTime: clientTime.getTime()};
+		dispatch(ev);
+		dispatch(updateDialog(sender, this.props.receiver, [ev]));
 		this.message.value=null;
+	}
+
+	setTimer(timer){
+		this.deleteTimer=timer;
+
 	}
 
 	render(){
@@ -120,7 +135,7 @@ class MessageComposer extends Component {
 				<Grid item xs={1}>
 					<div className={classes.timer}>
 						<IconButton>
-							<CloseTimer></CloseTimer>
+							<CloseTimer setTimer={this.setTimer.bind(this)}></CloseTimer>
 						</IconButton>
 
 					</div>

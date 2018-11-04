@@ -32,7 +32,8 @@ const styles={
 class Navigation extends Component {
 
 	componentWillMount(){
-		this.props.dispatch(updateContacts({clientName: 'Yaming'}));
+		console.log(this.props.sender);
+		this.props.dispatch(updateContacts(this.props.sender));
 	}
 
 	handleChange(e){
@@ -73,7 +74,8 @@ class Navigation extends Component {
 }
 
 function mapStateToProps(state){
-	return {loading: state.contacts.loading}
+	return {loading: state.contacts.loading,
+			sender: state.sender}
 }
 
 

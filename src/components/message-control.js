@@ -35,22 +35,17 @@ const styles={
 
 class MessageControl extends Component {
 	delete(){
-		const {messages, sender, receiver, dispatch}=this.props;
-		var list=messages.reduce((accumulator, currentValue, currentIndex)=>{
-			if(currentValue.selected) accumulator.push(true);
-			else accumulator.push(false);
-			return accumulator
-		}, []);
-		dispatch({type: 'deleteMessages', list});
-	}
-
-	cancelSelect(){
-		this.props.dispatch({type: 'cancelSelect'});
-
+		const {messages}=this.props;
+		var list=messages.reduce((acc, cur)=>{
+				if(cur.selected){
+					acc.push({sender: cur.sender, clientTime: cur.clientTime})
+				}
+				return acc;
+			},[]);
 	}
 
 	render(){
-		const {classes}=this.props;
+		const {classes, dispatch}=this.props;
 		return (
 			<div className={classes.root}>
 				<div className={classes.wrapperLeft}>
@@ -65,7 +60,7 @@ class MessageControl extends Component {
 				    </Button>
 	      		</div>
 	      		<div className={classes.wrapperRight}>
-				    <Button onClick={this.cancelSelect.bind(this)} className={classes.cancel}>
+				    <Button onClick={dispatch({type: 'cancelSelect'})} className={classes.cancel}>
 				        Cancel
 				    </Button>
 	      		</div>

@@ -11,7 +11,6 @@ import { withStyles } from '@material-ui/core/styles';
 import {connect} from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import ClearIcon from '@material-ui/icons/Clear';
 
 const styles={
 	floatRight: {
@@ -62,7 +61,7 @@ class HeaderBar extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.loggedOut) {
-				window.location.href="/login";
+				window.location.href="http://localhost:3000#/login";
 			}
 		})
 	}

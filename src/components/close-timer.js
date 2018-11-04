@@ -1,4 +1,3 @@
-import Popper from '@material-ui/core/Popper';
 import React, { Component } from 'react';
 import IconAvTimer from '@material-ui/icons/AvTimer';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -28,6 +27,25 @@ export default class CloseTimer extends Component {
 			anchorEl: null,
 			timer: txt
 		});
+		switch (txt){
+			case 'forever':
+				this.props.setTimer('forever');
+				break;
+			case '10s':
+				this.props.setTimer(10);
+				break;
+			case '30s':
+				this.props.setTimer(30);
+				break;
+			case '1min':
+				this.props.setTimer(60);
+				break;
+			case '10min':
+				this.props.setTimer(600);
+				break;
+			default:
+		}
+		
 	}
 
 

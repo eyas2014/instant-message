@@ -5,7 +5,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SmsIcon from '@material-ui/icons/Sms';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { loadDialog } from '../lib/actions';
 
 const styles={
 	root: {
@@ -46,7 +45,7 @@ class ContactTag extends Component {
 		const {contacts, classes, searchStr}= this.props;
 		return (      
 		<List component="nav">{contacts.map((item, index)=>{
-				if(item.name.indexOf(searchStr)==-1)return null;
+				if(item.name.indexOf(searchStr)===-1)return null;
 				else {
 					return (	        
 					<ListItem button classes={{root: classes.root}} key={index} onClick={()=>{this.handleClick(item.name)}}>
