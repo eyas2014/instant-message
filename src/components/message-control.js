@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+import {deleteMessages} from '../lib/actions';
 
 const styles={
 	root: {
@@ -35,13 +36,14 @@ const styles={
 
 class MessageControl extends Component {
 	delete(){
-		const {messages}=this.props;
+		const {messages, dispatch, sender, receiver}=this.props;
 		var list=messages.reduce((acc, cur)=>{
 				if(cur.selected){
 					acc.push({sender: cur.sender, clientTime: cur.clientTime})
 				}
 				return acc;
 			},[]);
+		dispatch(deleteMessages(sender, receiver, list))
 	}
 
 	render(){
@@ -60,7 +62,7 @@ class MessageControl extends Component {
 				    </Button>
 	      		</div>
 	      		<div className={classes.wrapperRight}>
-				    <Button onClick={dispatch({type: 'cancelSelect'})} className={classes.cancel}>
+				    <Button onClick={()=>dispatch({type: 'cancelSelect'})} className={classes.cancel}>
 				        Cancel
 				    </Button>
 	      		</div>
@@ -70,7 +72,7 @@ class MessageControl extends Component {
 
 function mapStateToProps(state){
 	return {
-		messages: state.dialogs.data,
+		messages: state.dialog,
 		sender: state.sender,
 		receiver: state.receiver
 	}

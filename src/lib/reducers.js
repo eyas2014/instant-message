@@ -10,7 +10,7 @@ function sender(state='', action){
 
 
 function receiver(state='', action){
-	if(action.type==="updateReceiver"){
+	if(action.type==="refetchStart"){
 		state=action.receiver;
 	}
 	return state;
@@ -49,65 +49,94 @@ function dialog(state=[], action){
 	switch(action.type){
 		case 'receiveNewMessage':
 			const timerStart=new Date().getTime();
-			newMessage={message, deleteTimer, selected: false, sender, timerStart, clientTime};
+			newMessage={message, deleteTimer, selected: false, sender, timerStart, clientTime, status: 'receivedMessage'};
 			state=[...state, newMessage];
 			break;
 		case 'sendNewMessage':
-			newMessage={message, deleteTimer, selected: false, sender, clientTime, status: 'composed'};
+			newMessage={message, deleteTimer, selected: false, sender, clientTime, status: action.status||'composed'};
 			state=[...state, newMessage];
 			break;
 
 		case 'toggleMessage':
 			state=state.reduce((acc, cur)=>{
 					if(cur.clientTime===action.clientTime&&cur.sender===action.sender) {
-						cur.selected=!cur.selected;
+						cur=Object.assign({}, cur, {selected: !cur.selected});
+						acc.push(cur);
+					}else{
 						acc.push(cur);
 					};
 					return acc;
 				}, []);
 			break;
-		case 'deleteMessage': 
+		case 'deleteMessages': 
 			state=state.reduce((acc, cur)=>{
-					if(cur.clientTime===action.clientTime&&cur.sender===action.sender) {
-						cur.status='deleting';
+					if(cur.selected) {
+						cur=Object.assign({},cur, {selected: false, status: 'deleting'});
 						acc.push(cur);
-					};
-					return acc;
-				}, []);
-			break;
-		case 'deleteSuccess': 
-			state=state.reduce((acc, cur)=>{
-					if(cur.clientTime!==action.clientTime||cur.sender!==action.sender) {
-						acc.push(cur);
-					};
-					return acc;
-				}, []);
-			break;
-		case 'cancelSelect': 
-			state=state.reduce((acc, cur)=>{
-					if(cur.clientTime===action.clientTime&&cur.sender===action.sender) {
-						cur.seleted=false;
-						acc.push(cur);
-					};
-					return acc;
-				}, []);
-			break;
-		case 'removeTimeout':
-			state=state.reduce((acc, cur)=>{
-					if(cur.timerStart){
-						var timeLeft=cur.deleteTimer*1000-(action.currentTime-cur.timerStart);
-						if(timeLeft>0) acc.push(cur);
-					}
+					} 
 					else acc.push(cur);
 					return acc;
 				}, []);
 			break;
+
+		case 'receiveDeleteMessages': 
+			action.list.forEach((item)=>{
+				state=state.reduce((acc, cur)=>{
+						if(cur.clientTime!==item.clientTime||cur.sender!==item.sender) {
+							acc.push(cur);
+						};
+						return acc;
+					}, []);
+			});
+			break;
+
+		case 'deleteSuccess': 
+			console.log(action.list, state);
+			action.list.forEach((item)=>{
+				state=state.reduce((acc, cur)=>{
+						if(cur.clientTime!==item.clientTime||cur.sender!==item.sender) {
+							acc.push(cur);
+						};
+						return acc;
+					}, []);
+			});
+			break;
+		case 'cancelSelect': 
+			state=state.reduce((acc, cur)=>{
+						cur=Object.assign({}, cur, {selected: false});
+						acc.push(cur);
+						return acc;
+				}, []);
+			break;
+		case 'removeTimeout':
+			state=state.reduce((acc, cur)=>{
+					if(cur.timerStart&&cur.deleteTimer!=='forever'){
+						var timeLeft=cur.deleteTimer*1000-(action.currentTime-cur.timerStart);
+						if(timeLeft>0) acc.push(cur);
+						console.log('aa');
+					}
+					else acc.push(cur);
+					return acc;
+				}, []);
+			console.log(state);
+			break;
 		case 'sentToReceiver':
 			state=state.reduce((acc, cur)=>{
-					if(!cur.timerStart&&cur.clientTime===action.clientTime)	cur.timerStart=new Date();
+					if(!cur.timerStart&&cur.clientTime===action.clientTime)	{
+						cur.timerStart=new Date();
+						cur.status='sentToReceiver';
+					}
 					acc.push(cur);
 					return acc;
 				}, []);
+			break;
+
+		case 'refetchStart':
+			state=[];
+			break;
+
+		case 'refetchSuccess':
+			state=action.messages;
 			break;
 
 		case 'sentToServer':
@@ -127,8 +156,12 @@ function dialog(state=[], action){
 
 
 function numberSelected(state=0, action){
-	if(action.type==="selectMessage") state++;
-	if(action.type==="deselectMessage") state--;
+	if(action.type==="toggleMessage") {
+		if(action.selected)state++;
+		else state--;
+	}
+	if(action.type==="deleteMessages") state=0;
+	if(action.type==="refetchStart") state=0;
 	if(action.type==="deleteSuccess") state=0;
 	if(action.type==="cancelSelect") state=0;
 	return state

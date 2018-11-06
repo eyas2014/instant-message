@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
 import { connect } from 'react-redux';
 import CloseTimer from './close-timer';
-import {updateDialog} from '../lib/actions';
+import {sendMessage} from '../lib/actions';
 
 const styles={
 	wrapper: {
@@ -77,8 +77,7 @@ class MessageComposer extends Component {
 		var clientTime=new Date();
 		var ev={type:'sendNewMessage',message: this.message.value, deleteTimer: this.deleteTimer, 
 					sender,  receiver, clientTime: clientTime.getTime()};
-		dispatch(ev);
-		dispatch(updateDialog(sender, this.props.receiver, [ev]));
+		dispatch(sendMessage(ev));
 		this.message.value=null;
 	}
 

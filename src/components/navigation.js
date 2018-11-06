@@ -10,7 +10,6 @@ import {updateContacts} from '../lib/actions';
 import { connect } from 'react-redux';
 import spinner from '../images/spinner.gif';
 
-
 const styles={
 	search: {
 		margin: "10px",

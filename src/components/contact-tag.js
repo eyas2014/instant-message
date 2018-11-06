@@ -5,6 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SmsIcon from '@material-ui/icons/Sms';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import {refetchDialog} from '../lib/actions';
 
 const styles={
 	root: {
@@ -34,9 +35,10 @@ const styles={
 };
 
 class ContactTag extends Component {
-	handleClick(contact){
-		if(contact!==this.props.receiver) {
-			this.props.dispatch({type:'updateReceiver', receiver: contact});
+	handleClick(receiver){
+		if(receiver!==this.props.receiver) {
+//			this.props.dispatch({type: 'updateReceiver', receiver});
+			this.props.dispatch(refetchDialog(this.props.sender, receiver));
 		}
 
 	}
@@ -71,6 +73,7 @@ const mapStateToProps=function (state){
 	return {contacts: state.contacts.data,
 			receiver: state.receiver,
 			searchStr: state.searchContacts,
+			sender: state.sender
 	}
 }
 

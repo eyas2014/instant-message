@@ -73,29 +73,32 @@ const styles={
 
 class Message extends Component {
 
-	selectMessage(id){
+	toggleMessage(){
 		const {dispatch, message}=this.props;
-		dispatch({type:'toggleMessage', sender: message.sender, clientTime: message.clientTime});
+		dispatch({type:'toggleMessage', sender: message.sender, clientTime: message.clientTime, selected: message.selected});
 	}
 
 
 	render(){
-		const {timerStart, deleteTimer, message, sender, clientTime, status}=this.props.message;
+		const {timerStart, deleteTimer, message, sender, clientTime, status, selected}=this.props.message;
 		var timeLeft;
-		if(deleteTimer==='forever')timeLeft='00:00';
+		console.log(this.props.message);
+		if(status==='deleting') timeLeft='Deleting';
+		else if(status==='composed') timeLeft='Sending';
+		else if(status==='sentToServer'&&deleteTimer==='forever')timeLeft='forever';
+		else if(status==='sentToReceiver'&&deleteTimer==='forever')timeLeft='forever';
+		else if(status==='receivedMessage'&&deleteTimer==='forever')timeLeft='forever';
 		else if(timerStart){ 
 			timeLeft=deleteTimer-(this.props.currentTime-timerStart)/1000;
 			timeLeft=Math.floor(timeLeft/60)+':'+Math.floor(timeLeft%60);
 		}
-		else if(status==='composed') timeLeft='Sending';
-		else if(status==='deleted') timeLeft='Deleting';
 		else timeLeft=Math.floor(deleteTimer/60)+':'+Math.floor(deleteTimer%60);
 
 		var classes=this.props.classes;
 		return (
 		<div>
-			<Grid container justify="center"  onClick={this.selectMessage.bind(this)} className={message.selected?classes.greyBackground:classes.brightBackground}>
-				<Grid item xs={1}   className={message.selected?classes.selectedTick:classes.tick}>
+			<Grid container justify="center"  onClick={this.toggleMessage.bind(this)} className={selected?classes.greyBackground:classes.brightBackground}>
+				<Grid item xs={1}   className={selected?classes.selectedTick:classes.tick}>
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>
 				<Grid item  xs={1} >

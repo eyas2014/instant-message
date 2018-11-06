@@ -22,12 +22,13 @@ class DialogBox extends Component {
 	}
 
 	componentDidMount(){
-		const {sender, dispatch, putEvents}= this.props;
+		const {sender, dispatch}= this.props;
+
 		this.intervalId=setInterval(()=>{
 			var currentTime=new Date().getTime();
 			this.setState({currentTime});
 			dispatch({type:'removeTimeout', currentTime});
-			dispatch(updateDialog(sender, this.props.receiver, []));
+			if(this.props.receiver)dispatch(updateDialog(sender, this.props.receiver));
 		}, 10000)
 	}
 
