@@ -1,3 +1,48 @@
+export function addContact(sender, contact){
+	return function(dispatch){
+		dispatch({type: 'addContactStart'})
+		return fetch('http://localhost:3000/addContact',{
+					method: "POST", 
+			        mode: "cors", 
+			        cache: "no-cache", 
+			        credentials: "same-origin", 
+			        headers: {
+			            "Content-Type": "application/json; charset=utf-8",	       
+			        },
+			        redirect: "follow", 
+			        referrer: "no-referrer", 
+			        body: JSON.stringify({sender, contact})
+				})
+				.then((response)=>{return response.json()})
+				.then((res)=>{
+					dispatch({type: 'addContactSuccess', name: res.name, lastVisited: res.lastVisited})
+				})
+
+	}
+
+}
+
+export function loadAccounts(sender){
+	return function(dispatch){
+		return fetch('http://localhost:3000/loadAccounts',{
+					method: "POST", 
+			        mode: "cors", 
+			        cache: "no-cache", 
+			        credentials: "same-origin", 
+			        headers: {
+			            "Content-Type": "application/json; charset=utf-8",	       
+			        },
+			        redirect: "follow", 
+			        referrer: "no-referrer", 
+			        body: JSON.stringify({sender})
+				})
+				.then((response)=>{return response.json()})
+				.then((accounts)=>{
+					dispatch({type:'loadAccounts', accounts})
+				})
+	}
+}
+
 export function updateContacts(sender){
 	return function(dispatch){
 		return fetch('http://localhost:3000/getContacts',{
@@ -36,10 +81,14 @@ export function updateDialog(sender, receiver){
 				})
 				.then((response)=>{return response.json()})
 				.then((events)=>{
-						console.log(events);
+						dispatch({type: 'checkConnection', status: true})
 						events.forEach((item)=>{
 							dispatch(item)
 						})
+				})
+				.catch((e)=>{
+					dispatch({type: 'checkConnection', status: false})
+					console.log(e);
 				})
 	}
 }
@@ -61,7 +110,6 @@ export function refetchDialog(sender, receiver){
 					})
 					.then((response)=>{return response.json()})
 					.then((ev)=>{
-						console.log(ev);
 						ev.forEach((item)=>{
 							dispatch(item);
 						})

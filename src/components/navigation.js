@@ -9,6 +9,9 @@ import ContactTag from './contact-tag';
 import {updateContacts} from '../lib/actions';
 import { connect } from 'react-redux';
 import spinner from '../images/spinner.gif';
+import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
+import ContactModal from './contact-modal';
 
 const styles={
 	search: {
@@ -20,23 +23,33 @@ const styles={
 		padding: '5px'
 	},
 	spinner: {
-		marginTop: '100px',
+		marginTop: '50px',
 		width: '60px',
 		height: 'auto',
-		margin: 'auto'
+		margin: 'auto',
+		marginBottom: '50px',
 	}
 }
 
 
 class Navigation extends Component {
+	constructor(){
+		super();
+		this.state={openModal:false};
+
+	}
 
 	componentWillMount(){
-		console.log(this.props.sender);
 		this.props.dispatch(updateContacts(this.props.sender));
 	}
 
 	handleChange(e){
 		this.props.dispatch({type: 'searchContacts', str: e.target.value})
+	}
+
+	closeModal(){
+		this.setState({openModal: false});
+
 	}
 
 	render(){
@@ -68,6 +81,14 @@ class Navigation extends Component {
 				</TextField>
 
 				{loading?<img src={spinner} className={classes.spinner} alt="spinner"></img>:<ContactTag />}
+				<br />
+				<Button variant="extendedFab" aria-label="Add Contacts" className={classes.addContacts} 
+						onClick={()=>this.setState({openModal: true})}>
+		       		 Add Contacts
+		    	</Button>
+		    	<Modal open={this.state.openModal}>
+		    		<ContactModal closeModal={this.closeModal.bind(this)}></ContactModal>
+		    	</Modal>
 			</div>)
 	}
 }

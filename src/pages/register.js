@@ -50,8 +50,7 @@ class Register extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.success) {
-				this.props.dispatch({type: 'login', username: this.state.userName});
-				window.location.href="http://localhost:3000#/dashboard";
+				window.location.href="http://localhost:3000#/dashboard/"+this.state.userName;
 			}
 			else this.setState({accountExist: true});
 		})

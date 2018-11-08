@@ -22,11 +22,7 @@ const styles={
 		fontSize: '11px'
 	},
 	date: {
-		marginRight: '0px',
 		fontSize: '13px',
-		position: 'absolute',
-		right: '0px',
-		top: '2px'
 	},
 	user: {
 		fontSize: '13px',
@@ -56,10 +52,9 @@ class ContactTag extends Component {
 			          </ListItemIcon>
 			          <div className={classes.container}>
 				          <span  className={classes.user}>{item.name}</span> 
-				          <span  className={classes.date}>{item.date}</span>
 				          <br />
-				          <span className={classes.lastMessage}>{item.lastMessage.Name+': '+item.lastMessage.message}</span>
-			          </div>
+				          <span  className={classes.date}>{item.lastVisited}</span>
+				      </div>
 			        </ListItem>)
 			    }
 			})}

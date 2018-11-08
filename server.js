@@ -6,11 +6,47 @@ var bodyParser = require('body-parser');
 var fs=require('fs');
 var crypto=require('crypto');
 var events={};
+var contacts={};
+contacts.Tom=["Yaming","Kate"];
+
+contacts.Yaming=["Tom", "Kate"];
+
 
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-var account={};
+var accounts={Yaming:"iD/EvDLtLnOahOP4XCJdGZQLL1NhTDiHXjYTGdbUuZGO9xIiHgWLvHbjHlYkhmH5EXOnCguPr4Mc6UTvq8V5MSRRbwZD+ChX8YmtVS5+i2E+ajZPSHuhnQHOC7CT9e2WFke+G+YRSR1I0WrfB9AVpq/RxnXMYhdSBVr7sypNytuN48318YubvyoMBzsfYN2K5vRSGx81yNt99pT+evmbXY8rS6MWGTC69bp4efYUPbP9f0cFinqDOG7xXA9ariKMdJT4B+jTDLURFtGLBR2mjW1Uo7nVFBzRMkNojKdU+3lNqytrU1ujNBUK8m3fmN9ytdZ8H6dTHTc8vCE6lOonngZtKTRNEmdSnDB6SGw6FSc5PDWhkUHC4m4k5N8gl6cwCqijAUMrizRef/wC9v1aASVPW0F0mlmbceGDGd6IJvr1zG9lDp3Doqylt1kUtAzjeqw1eKNO6DTRKPGjO5LU/FDe6INWoWy5TrYqau7l0T/vYXp7XWPji7i4FoBoox6gCzCSIElC57BAuQK4mVD3nn9OFnGoIiefN/GPGa05aoRSKjxYd/SHj65jArR6OGnjr+eSeFqHx7Ma7xjMpp/wY1Ol0lX7LQ+oACQubYl2+GHq48VsF0SJRSuaIzTgCZl79JqT3brsGvj+LLzTFapCjBSAtdyLMGj0v9UT/Or7AwI=",
+Tom:"18Sd16s51Nmg1r75B+JuxGVdSjObnagS8BEoARoDG3L4ImFnPBQ/zVsnuQxjhQgy62R/BW6shVwKQQogOBumg1SKYgzfLPOY1SWM6eNimLZhZa/DDX7tQI4PICKfWnSOZbjUv7STASb/AXp61pd6aN1Em8vr4nNOjkNGYBFdV3w2zGgWyvOZ/8wF2jtXmWV+3LVu7mHBBo2TIKmoY2GPG5i4wnZRKWbvtC5+lROcwebzG0mhYqTkPmdG59dZDGY/nQEAooBN2Xvzh7zfcDY3AU/CadpEd1YKk86GhB/m2Bghc7RXB7ppeFBJe7FLGPXnUVrdWhS56beUNNDNGcY/QksacrI2HaWLrxpHXMpwLFQVNT0faewqfWgLZNEpHh5S1jDQYf4de57wxlkffA/6ooHm+jDHiqduCO0avVeGwnX26/OnJAqtOi7fBtkHJBwIFQeNkivD3zfUR87mBSHnuQO3He9GJOwlogtU5myysha9g3pyNh7Xe/x4B7HiMxfTRsyl+86bxlzddcXNUrPAkMdVseF5zmCsz6DKmTRtyohb8Uj/hwNfqGeEv1mKXv8zt82TSElocwtXGXAa9pGS5RLUbl4djUEOCLoU2biCEPS5QJYPfAB5xnY8Z0ZgiW3vGjSoE99zB3lDeLErHRg+PFxrr2P7HDmGS6cINeD6nWQ="};
+
+
+var lastVisited={Yaming: getTime(), Tom: getTime()};
+
+function getTime(){
+	var t=new Date();
+	var str=t.toTimeString().substring(0,8)+' '+(t.getMonth()+1)+'/'+(t.getDate()+1)+'/'+t.getFullYear();
+	return str;
+}
+
+app.post('/loadAccounts', function(req, res){
+	var list=Object.keys(accounts);
+	contacts[req.body.sender].forEach((item)=>{
+		list=list.filter((element)=>{
+			return item!==element
+		})
+	});
+	list=list.filter((element)=>{return req.body.sender!==element});
+	res.send(list);
+});
+
+
+app.post('/addContact', function(req, res){
+	contacts[req.body.sender].push(req.body.contact);
+	contacts[req.body.contact].push(req.body.sender);
+	res.send({name:req.body.contact, lastVisited: lastVisited[req.body.contact]});
+
+});
+
+
 
 app.get('/prelogin', function(req, res){
 	if(req.cookies.sessionID) res.send({validated: true});
@@ -20,8 +56,9 @@ app.get('/prelogin', function(req, res){
 
 app.post('/authenticate', function(req, res){
 	crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-		if(account[req.body.userName]===key.toString('base64')){
+		if(accounts[req.body.userName]===key.toString('base64')){
 			res.cookie("sessionID", req.body.userName);
+			lastVisited[req.body.userName]=getTime();
 			res.send(JSON.stringify({validated: true}));
 		}else{
 			res.send(JSON.stringify({validated: false}));
@@ -30,12 +67,14 @@ app.post('/authenticate', function(req, res){
 });
 
 app.post('/registration', function(req, res){
-		if(account[req.body.userName]){
+		if(accounts[req.body.userName]){
 			res.send(JSON.stringify({success: false}));
 		}else{
 			crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-				account[req.body.userName]=key.toString('base64');
-				fs.writeFile('./database/account.json', JSON.stringify(account), {encoding: 'utf8'}, ()=>{
+				accounts[req.body.userName]=key.toString('base64');
+				lastVisited[req.body.userName]=getTime();
+				fs.writeFile('./database/account.json', JSON.stringify(accounts), {encoding: 'utf8'}, ()=>{
+					contacts[req.body.userName]=[];
 					res.send(JSON.stringify({success: true}));
 				  	console.log(`created an account for: ${req.body.userName}`)
 				});
@@ -71,7 +110,6 @@ app.post('/updateDialog', function(req, res){
 		return acc;
 	},[]);
 	res.send(JSON.stringify(respondEvents));
-	console.log(events[nameInbound]);
 });
 
 app.post('/refetchDialog', function(req, res){
@@ -170,20 +208,10 @@ app.get('/logout', function(req, res){
 });
 
 app.post('/getContacts', function(req, res){
-	var contactsFile= `./database/${req.body.sender}-contact.json`;
-	fs.readFile(contactsFile, {encoding: 'utf8'}, function(err, target){
-		if(target){
-			var json=JSON.parse(target)
-			setTimeout(function(){
-				console.log("sending contacts");
-				res.send(target);
-			}, 1000)
-		}else{
-			console.log('failed to read contacts of');
-		}
-
-	});
-	
+	var responseList=contacts[req.body.sender].map((item, index)=>{
+		return {name: item, lastVisited: lastVisited[item]}
+	})
+	res.send(responseList);
 });
 
 

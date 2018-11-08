@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
-import MenuIcon from '@material-ui/icons/Menu';
+import WifiIcon from '@material-ui/icons/Wifi';
+import WifiOffIcon from '@material-ui/icons/WifiOff';
 import SearchIcon from '@material-ui/icons/Search';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -73,46 +74,32 @@ class HeaderBar extends Component {
 
 
 	render(){
-		const { classes, receiver } = this.props;
+		const { classes, receiver, connection } = this.props;
 		return (
 			<AppBar position='static' classes={{root: classes.noShadow}}>
 				<Grid container>
 						<Grid item xs={3}>
 							<Toolbar  classes={{root: classes.floatLeft}} >
 					          <IconButton aria-label="Menu" color="inherit">
-					            <MenuIcon />
+					            {connection?<WifiIcon />:<WifiOffIcon />}
 					          </IconButton>
 					          <Typography variant='inherit' color="inherit">
-					            Telegram
+					            {connection?'online':'offline'}
 					          </Typography>
 				        	</Toolbar>
 				        </Grid>
-				        <Grid item xs={9}>
+				        <Grid item xs={6}>
 					        <Toolbar  classes={{root: classes.floatLeft}} >
 					          <Typography variant='inherit' className={classes.typography1}>
-					            Contact:
+					            Chatting with:
 					          </Typography>
 					          <Typography variant='inherit'  className={classes.typography2}>
 					            {receiver}
 					          </Typography>
 					        </Toolbar>
+					    </Grid>
+					    <Grid item xs={3}>
 					        <Toolbar   classes={{root: classes.floatRight}} >
-								<TextField placeholder="search"
-											variant="filled"
-											margin="normal"
-											classes={{root: classes.search}}
-											onChange={(e)=>this.handleChange(e)}
-								          InputProps={{
-								          	className: classes.iconButton,
-								            startAdornment: (
-								              <InputAdornment>
-								                <IconButton aria-label="search" classes={{root: classes.iconButton}}>
-													<SearchIcon />
-								                </IconButton>
-								              </InputAdornment>
-								            ),
-								          }}>
-								</TextField>
 								<Button color="inherit" onClick={this.logout} className={classes.button}>Logout
 						        </Button>
 					    	</Toolbar>
@@ -125,7 +112,9 @@ class HeaderBar extends Component {
 }
 
 function mapStateToProps(state){
-	return {receiver: state.receiver}
+	return {receiver: state.receiver,
+			connection: state.connection
+			}
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(HeaderBar));

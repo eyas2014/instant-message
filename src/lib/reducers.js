@@ -9,6 +9,11 @@ function sender(state='', action){
 }
 
 
+function connection(state=true, action){
+	if(action.type==="checkConnection")state=action.status;
+	return state;
+};
+
 function receiver(state='', action){
 	if(action.type==="refetchStart"){
 		state=action.receiver;
@@ -16,8 +21,21 @@ function receiver(state='', action){
 	return state;
 }
 
+function accounts(state=[], action){
+	if(action.type==='loadAccounts'){
+		state=action.accounts
+	}
+	return state;
+}
 
 function contacts(state={loading: true, data:[]}, action){
+	if(action.type==="addContactStart"){
+		state={loading:true, data: state.data}
+	}
+	if(action.type==="addContactSuccess"){
+		state.data.push({name: action.name, lastVisited: action.lastVisited});
+		state={loading:false, data: state.data}
+	}
 	if(action.type==="requestContacts"){
 		state={loading:true, data:[]}
 	}
@@ -118,7 +136,6 @@ function dialog(state=[], action){
 					else acc.push(cur);
 					return acc;
 				}, []);
-			console.log(state);
 			break;
 		case 'sentToReceiver':
 			state=state.reduce((acc, cur)=>{
@@ -173,10 +190,6 @@ function searchContacts(state='', action){
 	return state;
 }
 
-function modifications(state=[], action){
-	if(action.type==="newMessage"||action.type==="deleteMessages") state.push(action);
-	return state
-}
 
 function putEvents(state=[], action){
 	if(action.type==="sendNewMessage"||action.type==="deleteMessage"){
@@ -189,7 +202,7 @@ function putEvents(state=[], action){
 }
 
 
-const Reducers=combineReducers({contacts, sender, receiver, dialog, putEvents,
-						scrollBox, numberSelected, searchContacts, modifications});
+const Reducers=combineReducers({contacts, sender, receiver, dialog, putEvents, connection,
+						scrollBox, numberSelected, searchContacts, accounts});
 
 export default Reducers;

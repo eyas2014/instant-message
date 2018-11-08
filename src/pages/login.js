@@ -21,7 +21,7 @@ const P=styled.p`
 class Login extends Component {
 	constructor(){
 		super();
-		this.state={incorrectPassword: false}
+		this.state={incorrectPassword: false};
 	}
 
 	submit(){
@@ -40,8 +40,7 @@ class Login extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.validated) {
-				this.props.dispatch({type: 'login', username: this.state.userName});
-				window.location.href="http://localhost:3000#/dashboard";
+				window.location.href="http://localhost:3000#/dashboard/"+this.state.userName;
 			}
 			else this.setState({incorrectPassword: true});
 		})

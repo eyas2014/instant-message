@@ -46,9 +46,12 @@ const styles={
 }
 
 class App extends Component {
+	componentWillMount(){
+		this.props.dispatch({type:'login', username: this.props.match.params.username});
+	}
 
 	render(){
-		const { classes, numberSelected} =this.props;
+		const { classes, numberSelected, receiver} =this.props;
 		return (
 			<Grid container justify='center' className={classes.background}>
 				<Grid item xs={12} md={8} className={classes.fullHeight}>
@@ -60,8 +63,8 @@ class App extends Component {
 							</Grid>
 							<Grid item xs={9}   className={classes.dialogBox}>
 								<DialogBox></DialogBox>
-								{numberSelected?<MessageControl></MessageControl>
-												:<MessageComposer></MessageComposer>}
+								{numberSelected!==0&&<MessageControl></MessageControl>}
+								{receiver&&numberSelected===0&&<MessageComposer></MessageComposer>}
 							</Grid>
 						</Grid>
 					</div>
@@ -74,7 +77,7 @@ class App extends Component {
 
 const mapStateToProps=function (state){
 	return {numberSelected: state.numberSelected,
-			sender: state.sender}
+			receiver: state.receiver}
 }
 
 const AppWithStyles=withStyles(styles)(App);
