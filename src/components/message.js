@@ -7,6 +7,10 @@ import spinner from '../images/spinner.gif';
 import { connect } from 'react-redux';
 
 const styles={
+	image: {
+		width: "100px",
+		height: "auto"
+	},
 	tick: {
 		display: 'flex',
 		justifyContent: 'center',
@@ -80,9 +84,9 @@ class Message extends Component {
 
 
 	render(){
-		const {timerStart, deleteTimer, message, sender, clientTime, status, selected}=this.props.message;
-		var timeLeft;
+		const {timerStart, deleteTimer, message, sender, clientTime, status, selected, storeName}=this.props.message;
 		console.log(this.props.message);
+		var timeLeft;
 		if(status==='deleting') timeLeft='Deleting';
 		else if(status==='composed') timeLeft='Sending';
 		else if(status==='sentToServer'&&deleteTimer==='forever')timeLeft='forever';
@@ -109,7 +113,8 @@ class Message extends Component {
 				<Grid item  xs={6}>
 					<p className={classes.user}>{sender}</p>
 					<div>
-						<p className={classes.message}>{message}</p>
+						{message&&<p className={classes.message}>{message}</p>}
+						{storeName&&<img className={classes.image} src={'http://localhost:3000/'+storeName} />}
 					</div>
 				</Grid>
 				<Grid item  xs={1}>

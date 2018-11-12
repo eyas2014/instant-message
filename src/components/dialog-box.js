@@ -29,7 +29,7 @@ class DialogBox extends Component {
 			this.setState({currentTime});
 			dispatch({type:'removeTimeout', currentTime});
 			if(this.props.receiver)dispatch(updateDialog(sender, this.props.receiver));
-		}, 2000)
+		}, 5000)
 	}
 
 	componentWillUnmount(){

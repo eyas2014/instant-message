@@ -67,11 +67,13 @@ function dialog(state=[], action){
 	switch(action.type){
 		case 'receiveNewMessage':
 			const timerStart=new Date().getTime();
-			newMessage={message, deleteTimer, selected: false, sender, timerStart, clientTime, status: 'receivedMessage'};
+			if(action.message)newMessage={message, deleteTimer, selected: false, sender, timerStart, clientTime, status: 'receivedMessage'};
+			else newMessage={storeName: action.storeName, deleteTimer, sender, clientTime, timerStart, originalName: action.originalName};
 			state=[...state, newMessage];
 			break;
 		case 'sendNewMessage':
-			newMessage={message, deleteTimer, selected: false, sender, clientTime, status: action.status||'composed'};
+			if(action.message) newMessage={message, deleteTimer, selected: false, sender, clientTime, status: action.status||'composed'};
+			else newMessage={storeName: action.storeName, deleteTimer, sender, clientTime, originalName: action.originalName};
 			state=[...state, newMessage];
 			break;
 
@@ -109,7 +111,6 @@ function dialog(state=[], action){
 			break;
 
 		case 'deleteSuccess': 
-			console.log(action.list, state);
 			action.list.forEach((item)=>{
 				state=state.reduce((acc, cur)=>{
 						if(cur.clientTime!==item.clientTime||cur.sender!==item.sender) {
@@ -131,7 +132,6 @@ function dialog(state=[], action){
 					if(cur.timerStart&&cur.deleteTimer!=='forever'){
 						var timeLeft=cur.deleteTimer*1000-(action.currentTime-cur.timerStart);
 						if(timeLeft>0) acc.push(cur);
-						console.log('aa');
 					}
 					else acc.push(cur);
 					return acc;
@@ -140,8 +140,8 @@ function dialog(state=[], action){
 		case 'sentToReceiver':
 			state=state.reduce((acc, cur)=>{
 					if(!cur.timerStart&&cur.clientTime===action.clientTime)	{
-						cur.timerStart=new Date();
-						cur.status='sentToReceiver';
+						console.log("aa")
+						cur={...cur, timerStart: new Date(), status: 'sentToReceiver'}
 					}
 					acc.push(cur);
 					return acc;

@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
 import { connect } from 'react-redux';
 import CloseTimer from './close-timer';
-import {sendMessage} from '../lib/actions';
+import {sendMessage, uploadImg} from '../lib/actions';
 
 const styles={
 	wrapper: {
@@ -70,6 +70,11 @@ class MessageComposer extends Component {
 		this.deleteTimer=30;
 	}
 
+	handleUpload(e){
+		e.preventDefault();
+		const {sender, receiver, dispatch}=this.props;
+		dispatch(uploadImg(sender, receiver, this.deleteTimer, e.target.files[0]))
+	}
 
 	send(){
 		const {sender, dispatch, receiver}=this.props;
@@ -116,7 +121,9 @@ class MessageComposer extends Component {
 								<IconMic></IconMic>
 							</IconButton>
 						</div>
-						{[0,1,2,3,4,5,6].map((item, index)=>{
+ 						<input type="file" name="photo" id="inputlogo" onChange={this.handleUpload.bind(this)}/>
+
+						{[0,1,2,3,4,5].map((item, index)=>{
 							return (<div  className={classes.composerIcon2} key={index}>
 										<div  className={classes.emotionPic}>
 										</div>

@@ -1,3 +1,34 @@
+export function uploadImg(sender, receiver, deleteTimer, f){
+	return function(dispatch){
+		var formData = new FormData();
+		var clientTime= new Date().getTime();
+	    formData.append("file", f);
+	    formData.append("sender", sender);
+	    formData.append("receiver", receiver);
+	    formData.append("clientTime", clientTime);
+	    formData.append("deleteTimer", deleteTimer);
+
+		return fetch('http://localhost:3000/uploadImg',{
+				method: "POST", 
+		        mode: "cors", 
+		        cache: "no-cache", 
+		        credentials: "same-origin", 
+		        redirect: "follow", 
+		        referrer: "no-referrer", 
+		        body: formData
+			})
+			.then((response)=>{return response.json()})
+			.then((res)=>{
+				dispatch({type: 'sendNewMessage', clientTime, sender, deleteTimer, storeName: res.storeName, originalName: res.originalName });
+				dispatch({type:'sentToServer', sender, clientTime })
+			})
+			.catch((e)=>{
+				console.log(e)
+
+			})
+	}
+};
+
 export function addContact(sender, contact){
 	return function(dispatch){
 		dispatch({type: 'addContactStart'})
@@ -83,6 +114,7 @@ export function updateDialog(sender, receiver){
 				.then((events)=>{
 						dispatch({type: 'checkConnection', status: true})
 						events.forEach((item)=>{
+							console.log(item);
 							dispatch(item)
 						})
 				})

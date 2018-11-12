@@ -7,6 +7,42 @@ var fs=require('fs');
 var crypto=require('crypto');
 var events={};
 var contacts={};
+const multer = require('multer');
+
+app.use(express.static('public'));
+
+const multerConfig = {
+
+    storage: multer.diskStorage({
+      destination: function(req, file, next){
+        next(null, './public');
+      },
+
+      filename: function(req, file, next){
+        const ext = file.mimetype.split('/')[1];
+        const storeName=file.fieldname + '-' + Date.now() + '.'+ext;
+        req.body.storeName=storeName;
+        req.body.originalName=file.originalname;
+        next(null, storeName);
+      }
+    }),
+
+    fileFilter: function(req, file, next){
+    		console.log('here');
+          if(!file){
+            next();
+          }
+        const image = file.mimetype.startsWith('image/');
+        if(image){
+          console.log('photo uploaded');
+          next(null, true);
+        }else{
+          console.log("file not supported")
+          return next();
+        }
+    }
+  };
+
 contacts.Tom=["Yaming","Kate"];
 
 contacts.Yaming=["Tom", "Kate"];
@@ -26,6 +62,19 @@ function getTime(){
 	var str=t.toTimeString().substring(0,8)+' '+(t.getMonth()+1)+'/'+(t.getDate()+1)+'/'+t.getFullYear();
 	return str;
 }
+
+app.post('/uploadImg', multer(multerConfig).single('file'), function(req, res){
+	const {sender, receiver, storeName, originalName}=req.body;
+	req.body.clientTime=parseInt(req.body.clientTime);
+	nameOutbound=sender+'-'+receiver;
+	events[nameOutbound]=events[nameOutbound]||[];
+	events[nameOutbound].push({...req.body, type: "sendNewMessage"});
+	res.send(JSON.stringify({originalName, storeName}));
+
+})
+
+
+
 
 app.post('/loadAccounts', function(req, res){
 	var list=Object.keys(accounts);
@@ -137,20 +186,21 @@ app.post('/refetchDialog', function(req, res){
 		return acc;
 	}, []);
 	events[nameOutbound]=events[nameOutbound].reduce((acc, cur)=>{
-		if(cur.type==='sendNewMessage'&&cur.deleteTimer==='forever'){
-			cur.status='sentToReceiver'
+		if((cur.type==='sendNewMessage'||cur.type==='receiveNewMessage')&&cur.deleteTimer==='forever'){
+			cur.status='sentToServer'
 			acc.push(cur);
 			respondEvents.push(cur);
-		}else if(cur.type==='sendNewMessage'&&!cur.serverTime&&cur.deleteTimer!=='forever'){
+		}else if(cur.type==='sendNewMessage'&&cur.deleteTimer!=='forever'){
 			cur.status='sentToServer';
 			acc.push(cur);
 			respondEvents.push(cur);
-		}else if(cur.type==='sendNewMessage'&&cur.serverTime&&cur.deleteTimer!=='forever'){
+		}else if(cur.type==='receiveNewMessage'&&cur.deleteTimer!=='forever'){
 			var currentTime=new Date().getTime();
 			var timePassed=currentTime-cur.serverTime;
 			var timeLeft=cur.deleteTimer-timePassed/1000;
 			if(timeLeft>0){ 
 				cur.deleteTimer=timeLeft;
+				cur.serverTime=currentTime;
 				cur.status='sentToReceiver';
 				acc.push(cur);
 				respondEvents.push(cur);
