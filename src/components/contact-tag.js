@@ -5,7 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SmsIcon from '@material-ui/icons/Sms';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import {refetchDialog} from '../lib/actions';
+import {refetchDialog} from '../redux/actions';
 
 const styles={
 	root: {

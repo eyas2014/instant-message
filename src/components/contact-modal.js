@@ -2,7 +2,7 @@ import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import {loadAccounts, addContact} from '../lib/actions';
+import {loadAccounts, addContact} from '../redux/actions';
 import { connect } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

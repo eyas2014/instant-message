@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import dolphin from '../images/dolphin.png';
 import IconCheckCircle from '@material-ui/icons/CheckCircle';
-import spinner from '../images/spinner.gif';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
@@ -130,7 +128,7 @@ class Message extends Component {
 					<p className={classes.user}>{sender.name}</p>
 					<div>
 						{message&&<p className={classes.message}>{message}</p>}
-						{storeName&&<img className={classes.image} src={'http://localhost:3000/'+storeName} />}
+						{storeName&&<img className={classes.image} src={'http://localhost:3000/'+storeName} alt="pp"/>}
 					</div>
 				</Grid>
 				<Grid item  xs={1}>

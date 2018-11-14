@@ -8,7 +8,7 @@ import Test from './pages/test';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import rootReducer from './lib/reducers';
+import rootReducer from './redux/reducers';
 import thunkMiddleware from 'redux-thunk';
 
 const store = createStore(rootReducer,

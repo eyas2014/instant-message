@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 

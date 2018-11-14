@@ -7,7 +7,7 @@ import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 import { connect } from 'react-redux';
-import {updateContacts} from '../lib/actions';
+import {updateContacts} from '../redux/actions';
 
 const styles={
 	background: {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
-import {deleteMessages} from '../lib/actions';
+import {deleteMessages} from '../redux/actions';
 
 const styles={
 	root: {

@@ -5,10 +5,9 @@ import IconButton from '@material-ui/core/IconButton';
 import IconPanorama from '@material-ui/icons/Panorama';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import squid from '../images/squid.png';
 import { connect } from 'react-redux';
 import CloseTimer from './close-timer';
-import {sendMessage, uploadImg} from '../lib/actions';
+import {sendMessage, uploadImg} from '../redux/actions';
 import styled from 'styled-components';
 
 const Avartar=styled.div`

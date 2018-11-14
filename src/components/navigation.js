@@ -6,7 +6,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import ContactTag from './contact-tag';
-import {updateContacts} from '../lib/actions';
 import { connect } from 'react-redux';
 import spinner from '../images/spinner.gif';
 import Button from '@material-ui/core/Button';

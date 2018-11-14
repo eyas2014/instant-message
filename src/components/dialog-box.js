@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Message from './message';
-import {updateDialog} from '../lib/actions';
+import {updateDialog} from '../redux/actions';
 
 const styles={
 	root: {
@@ -21,7 +21,7 @@ class DialogBox extends Component {
 	}
 
 	componentDidMount(){
-		const {sender, dispatch}= this.props;
+		const {dispatch}= this.props;
 
 		this.intervalId=setInterval(()=>{
 			var currentTime=new Date().getTime();
