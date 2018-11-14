@@ -11,6 +11,10 @@ const styles={
 		bottom: '150px',
 		overflowY: 'scroll',
 		width: '100%'
+	},
+	instantMessage: {
+		color: '#ddd',
+		fontSize: '100px'
 	}
 }
 
@@ -36,9 +40,10 @@ class DialogBox extends Component {
 	}
 
 	render(){
-		const {classes, messages}=this.props;
+		const {classes, messages, receiver}=this.props;
 		return (
 		<div className={classes.root} ref="dialogBox" >
+			{!receiver&&<p className={classes.instantMessage}>INSTANT MESSAGE</p>}
 			{messages.map((item,index)=>{
 				return (<Message message={item} key={index} currentTime={this.state.currentTime}>
 						</Message>)}
