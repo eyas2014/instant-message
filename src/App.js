@@ -16,7 +16,7 @@ const store = createStore(rootReducer,
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#5f5fab' }, // Purple and green play nicely together.
+    primary: { main: '#538fbe' }, // Purple and green play nicely together.
     secondary: { main: '#11cb5f' }, // This is just green.A700 as hex.
   },
 });

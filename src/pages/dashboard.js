@@ -7,14 +7,17 @@ import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 import { connect } from 'react-redux';
+import {updateContacts} from '../lib/actions';
 
 const styles={
 	background: {
-		backgroundColor: '#ddd',
+		backgroundColor: '#fff',
 	},
 	fullHeight:{
 		position: 'relative',
-		height: "100vh"
+		boxShadow: "0px 4px 8px #000",
+		height: "100vh",
+		overflow: "hidden"
 	}, 
 	dialogBox: {
 		position: 'relative',
@@ -27,15 +30,18 @@ const styles={
 	},
 	fillRemain: {
 		position: 'absolute', 
-		top: '48px', 
+		top: '49px', 
 		bottom: '0px', 
-		width: "100%"
+		width: "100%",
+		zIndex: ""
 	},
 	nav: {
-		borderRight: "solid 2px #aaa",
-		backgroundColor: "#fff",
+		backgroundColor: "#cccccc",
+		borderRight: "solid 1px #888",
 		height: "100%",
-		overflowY: "scroll"
+		overflowY: "auto",
+		overflowX: "hidden",
+		boxShadow: "0px 4px 8px #000"
 	},
 	spinner: {
 		width: '40%',
@@ -47,7 +53,30 @@ const styles={
 
 class App extends Component {
 	componentWillMount(){
-		this.props.dispatch({type:'login', username: this.props.match.params.username});
+		const username=this.props.match.params.username;
+		fetch("http://localhost:3000/postLogin", {
+	        method: "POST", 
+	        mode: "cors", 
+	        cache: "no-cache", 
+	        credentials: "same-origin", 
+	        headers: {
+	            "Content-Type": "application/json; charset=utf-8",	       
+	        },
+	        redirect: "follow", 
+	        referrer: "no-referrer", 
+	        body: JSON.stringify({username}), 
+		}).then((response)=>{
+			return response.json()
+		}).then((data)=>{
+			if(data.validated) {
+				this.props.dispatch({type: 'login', 
+									name: username, 
+									column: data.column, 
+									row: data.row});
+				this.props.dispatch(updateContacts(username));
+			}
+			else window.location.href="http://localhost:3000#/login";
+		})
 	}
 
 	render(){

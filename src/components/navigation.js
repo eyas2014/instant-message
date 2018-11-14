@@ -20,7 +20,7 @@ const styles={
 		overflow: "hidden"
 	},
 	iconButton: {
-		padding: '5px'
+		padding: '5px',
 	},
 	spinner: {
 		marginTop: '50px',
@@ -28,6 +28,13 @@ const styles={
 		height: 'auto',
 		margin: 'auto',
 		marginBottom: '50px',
+	},
+	addContacts: {
+		boxShadow: "inset 0px 1px 2px #fff",
+		border: "solid 1px #777",
+		background: "linear-gradient(#649fcd, #427dab)",
+		color: "#fff"
+
 	}
 }
 
@@ -37,10 +44,6 @@ class Navigation extends Component {
 		super();
 		this.state={openModal:false};
 
-	}
-
-	componentWillMount(){
-		this.props.dispatch(updateContacts(this.props.sender));
 	}
 
 	handleChange(e){
@@ -82,7 +85,7 @@ class Navigation extends Component {
 
 				{loading?<img src={spinner} className={classes.spinner} alt="spinner"></img>:<ContactTag />}
 				<br />
-				<Button variant="extendedFab" aria-label="Add Contacts" className={classes.addContacts} 
+				<Button variant="contained" aria-label="Add Contacts" className={classes.addContacts} 
 						onClick={()=>this.setState({openModal: true})}>
 		       		 Add Contacts
 		    	</Button>
@@ -94,8 +97,7 @@ class Navigation extends Component {
 }
 
 function mapStateToProps(state){
-	return {loading: state.contacts.loading,
-			sender: state.sender}
+	return {loading: state.contacts.loading}
 }
 
 

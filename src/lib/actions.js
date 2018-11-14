@@ -3,7 +3,7 @@ export function uploadImg(sender, receiver, deleteTimer, f){
 		var formData = new FormData();
 		var clientTime= new Date().getTime();
 	    formData.append("file", f);
-	    formData.append("sender", sender);
+	    formData.append("sender", sender.name);
 	    formData.append("receiver", receiver);
 	    formData.append("clientTime", clientTime);
 	    formData.append("deleteTimer", deleteTimer);
@@ -42,7 +42,7 @@ export function addContact(sender, contact){
 			        },
 			        redirect: "follow", 
 			        referrer: "no-referrer", 
-			        body: JSON.stringify({sender, contact})
+			        body: JSON.stringify({sender, contact: contact.name})
 				})
 				.then((response)=>{return response.json()})
 				.then((res)=>{
@@ -114,7 +114,6 @@ export function updateDialog(sender, receiver){
 				.then((events)=>{
 						dispatch({type: 'checkConnection', status: true})
 						events.forEach((item)=>{
-							console.log(item);
 							dispatch(item)
 						})
 				})

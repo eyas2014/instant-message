@@ -2,16 +2,27 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import IconFileCopy from '@material-ui/icons/FileCopy';
-import IconCameraEnhance from '@material-ui/icons/CameraEnhance';
-import IconMic from '@material-ui/icons/Mic';
+import IconPanorama from '@material-ui/icons/Panorama';
 import TextField from '@material-ui/core/TextField';
-import emotionPic from '../images/emojisprite_0.png';
 import Button from '@material-ui/core/Button';
 import squid from '../images/squid.png';
 import { connect } from 'react-redux';
 import CloseTimer from './close-timer';
 import {sendMessage, uploadImg} from '../lib/actions';
+import styled from 'styled-components';
+
+const Avartar=styled.div`
+	width: 50px;
+	height: 60px;
+	border: solid 1px #618833;
+	border-radius: 50%;
+	background-image: url("profilePhoto.jpg");
+	background-position: ${(props)=>{ 
+		const x=-6-props.column*46;
+		const y=-16-props.row*56;
+		return x+'px '+y+'px'}};
+	background-size: 200px 480px;
+`;
 
 const styles={
 	wrapper: {
@@ -35,21 +46,23 @@ const styles={
 		height: "90px"
 	},
 	composerIcon1: {
+		display: 'inline-block',
 		float: 'left',
-		width: '10%'
+		margin: "4px"
 	},
 	composerIcon2: {
+		display: 'inline-block',
 		paddingTop: '6px',
 		paddingLeft: '9px',
-		float:'left',
-		width: '6%'
+		float:'right'
 	},
-	emotionPic: {
-		width: "30px",
-		height: "30px",
-		background: "url("+emotionPic+") 60px 60px",
-		backgroundSize: "810px 210px"
-	},
+
+	// emotionPic: {
+	// 	width: "30px",
+	// 	height: "30px",
+	// 	background: "url("+emotionPic+") 60px 60px",
+	// 	backgroundSize: "810px 210px"
+	// },
 
 	messageInput: {
 		color: 'red'
@@ -59,6 +72,16 @@ const styles={
 	timer: {
 		paddingLeft: '20px',
 		fontSize: '30px'
+	},
+	composerIcon3: {
+		fontSize: "40px",
+	},
+
+	composerIcon4: {
+		border: "solid 1px #666",
+		boxShadow: "inset 0px 1px 2px #fff",
+		background: 'linear-gradient(#649fcd, #427dab)',
+		color: "#fff"
 	}
 
 
@@ -71,7 +94,6 @@ class MessageComposer extends Component {
 	}
 
 	handleUpload(e){
-		e.preventDefault();
 		const {sender, receiver, dispatch}=this.props;
 		dispatch(uploadImg(sender, receiver, this.deleteTimer, e.target.files[0]))
 	}
@@ -92,13 +114,12 @@ class MessageComposer extends Component {
 	}
 
 	render(){
-		const { classes } =this.props;
+		const { classes, sender } =this.props;
 		return(
 			<Grid container className={classes.wrapper} justify="center">
 				<Grid item xs={1}>
-					<div>
-						<img src={squid} alt='logo' className={classes.iconImage}></img>
-					</div>
+					<Avartar column={sender.column} row={sender.row}>
+					</Avartar>
 				</Grid>
 				<Grid item xs={8}>
 					<TextField classes={{root: classes.messageRoot}} 
@@ -107,31 +128,14 @@ class MessageComposer extends Component {
 					</TextField>
 					<div>
 						<div  className={classes.composerIcon1}>
-							<IconButton>
-								<IconFileCopy></IconFileCopy>
-							</IconButton>
+								<label htmlFor={"imageInput"}><IconPanorama color="primary" className={classes.composerIcon3}></IconPanorama></label>
+								<input type="file" name="photo" id="imageInput" style={{display: 'none'}} 
+										onChange={this.handleUpload.bind(this)} />
 						</div>
-						<div  className={classes.composerIcon1}>
-							<IconButton>
-								<IconCameraEnhance></IconCameraEnhance>
-							</IconButton>
-						</div>
-						<div  className={classes.composerIcon1}>
-							<IconButton>
-								<IconMic></IconMic>
-							</IconButton>
-						</div>
- 						<input type="file" name="photo" id="inputlogo" onChange={this.handleUpload.bind(this)}/>
 
-						{[0,1,2,3,4,5].map((item, index)=>{
-							return (<div  className={classes.composerIcon2} key={index}>
-										<div  className={classes.emotionPic}>
-										</div>
-									</div>)
-						})}
 						<div  className={classes.composerIcon2}>
-							<Button color="primary" 
-									variant="contained"
+							<Button variant="contained"
+									className={classes.composerIcon4}
 									onClick={()=>this.send()}>
 								Send
 							</Button>
@@ -143,7 +147,6 @@ class MessageComposer extends Component {
 						<IconButton>
 							<CloseTimer setTimer={this.setTimer.bind(this)}></CloseTimer>
 						</IconButton>
-
 					</div>
 				</Grid>
 			</Grid>

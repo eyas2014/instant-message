@@ -2,8 +2,9 @@ import { combineReducers } from 'redux';
 
 
 function sender(state='', action){
-	if(action.type==="login"){
-		state=action.username
+	const {type, name, column, row}=action
+	if(type==="login"){
+		state={name, row, column}
 	}
 	return state;
 }
@@ -58,9 +59,6 @@ function scrollBox(state=false, action){
 	return state;
 }
 
-
-//actions: sendNewMessage, sentToServer, sentToReceiver, deleteMessage, deleteSuccess
-
 function dialog(state=[], action){
 	const {message, deleteTimer, sender, clientTime}=action;
 	var newMessage;
@@ -102,7 +100,7 @@ function dialog(state=[], action){
 		case 'receiveDeleteMessages': 
 			action.list.forEach((item)=>{
 				state=state.reduce((acc, cur)=>{
-						if(cur.clientTime!==item.clientTime||cur.sender!==item.sender) {
+						if(cur.clientTime!==item.clientTime||cur.sender.name!==item.sender.name) {
 							acc.push(cur);
 						};
 						return acc;
@@ -113,7 +111,7 @@ function dialog(state=[], action){
 		case 'deleteSuccess': 
 			action.list.forEach((item)=>{
 				state=state.reduce((acc, cur)=>{
-						if(cur.clientTime!==item.clientTime||cur.sender!==item.sender) {
+						if(cur.clientTime!==item.clientTime||cur.sender.name!==item.sender.name) {
 							acc.push(cur);
 						};
 						return acc;
@@ -140,7 +138,6 @@ function dialog(state=[], action){
 		case 'sentToReceiver':
 			state=state.reduce((acc, cur)=>{
 					if(!cur.timerStart&&cur.clientTime===action.clientTime)	{
-						console.log("aa")
 						cur={...cur, timerStart: new Date(), status: 'sentToReceiver'}
 					}
 					acc.push(cur);
@@ -158,7 +155,7 @@ function dialog(state=[], action){
 
 		case 'sentToServer':
 			state=state.reduce((acc, cur)=>{
-					if(cur.sender===action.sender&&cur.clientTime===action.clientTime)	{
+					if(cur.sender.name===action.sender.name&&cur.clientTime===action.clientTime)	{
 						cur.status='sentToServer';
 					}
 					acc.push(cur);

@@ -37,7 +37,11 @@ const styles={
 		color:  '#ccc'
 	},
 	noShadow: {
-		boxShadow: "none"
+		backgroundColor: "#538fbe",
+		boxShadow: "0px 1px 3px #000",
+		width: "101%",
+		marginLeft: "-2px",
+		background: "linear-gradient(#649fcd, #427dab)"
 	},
 	search: {
 		margin: "0px",
@@ -57,8 +61,20 @@ const styles={
 }
 
 class HeaderBar extends Component {
-	logout(){
-		fetch("http://localhost:3000/logout").then((response)=>{
+	logout(username){
+		console.log(username);
+		fetch("http://localhost:3000/logout", {
+		        method: "POST", 
+		        mode: "cors", 
+		        cache: "no-cache", 
+		        credentials: "same-origin", 
+		        headers: {
+		            "Content-Type": "application/json; charset=utf-8",	       
+		        },
+		        redirect: "follow", 
+		        referrer: "no-referrer", 
+		        body: JSON.stringify({username})
+			}).then((response)=>{
 			return response.json()
 		}).then((data)=>{
 			if(data.loggedOut) {
@@ -74,9 +90,9 @@ class HeaderBar extends Component {
 
 
 	render(){
-		const { classes, receiver, connection } = this.props;
+		const { classes, receiver, connection, sender} = this.props;
 		return (
-			<AppBar position='static' classes={{root: classes.noShadow}}>
+			<AppBar position='static' className={classes.noShadow}>
 				<Grid container>
 						<Grid item xs={3}>
 							<Toolbar  classes={{root: classes.floatLeft}} >
@@ -100,7 +116,7 @@ class HeaderBar extends Component {
 					    </Grid>
 					    <Grid item xs={3}>
 					        <Toolbar   classes={{root: classes.floatRight}} >
-								<Button color="inherit" onClick={this.logout} className={classes.button}>Logout
+								<Button color="inherit" onClick={()=>this.logout(sender)} className={classes.button}>Logout
 						        </Button>
 					    	</Toolbar>
 				        </Grid>
@@ -113,6 +129,7 @@ class HeaderBar extends Component {
 
 function mapStateToProps(state){
 	return {receiver: state.receiver,
+			sender: state.sender.name,
 			connection: state.connection
 			}
 }

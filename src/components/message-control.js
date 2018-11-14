@@ -9,28 +9,21 @@ const styles={
 		width: '100%',
 		height: '150px',
 		position: 'absolute',
-		bottom: '0px'
+		bottom: '0px',
+		borderTop: 'solid 1px #888',
+		boxShadow: '0px -1px 2px #888'
 	},
 
-	control: {
-		margin: '10px'
-	},
-	wrapperLeft: {
-		marginTop: '50px',
-		float: 'left',
-		paddingLeft: '20px',
-	}, 	
-	wrapperRight: {
-		marginTop: '50px',
-		float: 'right',
-		marginRight: '20px'
-	}, 
-	cancel: {
-		fontSize: '13px',
-		margin: '10px',
-		textAlign: 'left',
-		fontWeight: '900'
+
+
+	button: {
+		margin: "30px 60px",
+		border: "solid 1px #666",
+		boxShadow: "inset 0px 1px 2px #fff",
+		background: 'linear-gradient(#649fcd, #427dab)',
+		color: "#fff"
 	}
+
 }
 
 
@@ -50,22 +43,15 @@ class MessageControl extends Component {
 		const {classes, dispatch}=this.props;
 		return (
 			<div className={classes.root}>
-				<div className={classes.wrapperLeft}>
-				    <Button variant="contained" className={classes.control}>
-				       Forward
-				    </Button>
-				    <Button variant="contained" onClick={this.delete.bind(this)} className={classes.control}>
+
+				    <Button variant="contained" onClick={this.delete.bind(this)} className={classes.button}>
 				       Delete
 				    </Button>
-				    <Button variant="contained" className={classes.control}>
-				       Reply
-				    </Button>
-	      		</div>
-	      		<div className={classes.wrapperRight}>
-				    <Button onClick={()=>dispatch({type: 'cancelSelect'})} className={classes.cancel}>
+
+
+				    <Button onClick={()=>dispatch({type: 'cancelSelect'})} className={classes.button}>
 				        Cancel
 				    </Button>
-	      		</div>
 		</div>)
 	}
 }

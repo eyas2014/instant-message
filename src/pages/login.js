@@ -52,16 +52,6 @@ class Login extends Component {
 		this.setState(input);
 	}
 
-	componentWillMount(){
-		fetch("http://localhost:3000/prelogin").then((response)=>{
-			return response.json()
-		}).then((data)=>{
-			if(data.validated) {
-				//window.location.href="http://localhost:3000#/dashboard"; disable prelogin to temporarily allow two users in one computer.
-			}
-		})
-	}
-
 	render(){
 		return (<div>
 					<Image src={logo} alt='logo'></Image>

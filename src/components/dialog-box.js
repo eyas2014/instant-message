@@ -12,7 +12,6 @@ const styles={
 		overflowY: 'scroll',
 		width: '100%'
 	}
-
 }
 
 class DialogBox extends Component {
@@ -28,7 +27,7 @@ class DialogBox extends Component {
 			var currentTime=new Date().getTime();
 			this.setState({currentTime});
 			dispatch({type:'removeTimeout', currentTime});
-			if(this.props.receiver)dispatch(updateDialog(sender, this.props.receiver));
+			if(this.props.receiver)dispatch(updateDialog(this.props.sender, this.props.receiver));
 		}, 5000)
 	}
 
@@ -53,7 +52,7 @@ class DialogBox extends Component {
 function mapStateTopProps(state){
 	return {scrollBox: state.scrollBox,
 			receiver: state.receiver,
-			sender: state.sender,
+			sender: state.sender.name,
 			messages: state.dialog,
 		}
 }

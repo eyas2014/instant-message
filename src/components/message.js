@@ -5,6 +5,21 @@ import dolphin from '../images/dolphin.png';
 import IconCheckCircle from '@material-ui/icons/CheckCircle';
 import spinner from '../images/spinner.gif';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+
+
+const Avartar=styled.div`
+	width: 50px;
+	height: 60px;
+	border: solid 1px #618833;
+	border-radius: 50%;
+	background-image: url("profilePhoto.jpg");
+	background-position: ${(props)=>{ 
+		const x=-6-props.column*46;
+		const y=-16-props.row*56;
+		return x+'px '+y+'px'}};
+	background-size: 200px 480px;
+`;
 
 const styles={
 	image: {
@@ -24,7 +39,10 @@ const styles={
 	selectedTick: {
 		display: 'flex',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		'& svg': { 
+			color: '#88f'
+		}
 	},
 
 	user: {
@@ -67,7 +85,7 @@ const styles={
 		'&:hover': {
 			backgroundColor: "#eee",
 			'& svg': {
-				color: '#99f'
+				color: '#538fbe'
 			}
 		}
 	}
@@ -78,14 +96,13 @@ const styles={
 class Message extends Component {
 
 	toggleMessage(){
-		const {dispatch, message}=this.props;
-		dispatch({type:'toggleMessage', sender: message.sender, clientTime: message.clientTime, selected: message.selected});
+		const { sender, clientTime, selected }=this.props.message;
+		this.props.dispatch({type:'toggleMessage', sender, clientTime, selected});
 	}
 
 
 	render(){
 		const {timerStart, deleteTimer, message, sender, clientTime, status, selected, storeName}=this.props.message;
-		console.log(this.props.message);
 		var timeLeft;
 		if(status==='deleting') timeLeft='Deleting';
 		else if(status==='composed') timeLeft='Sending';
@@ -106,12 +123,11 @@ class Message extends Component {
 					<IconCheckCircle color="primary"></IconCheckCircle>
 				</Grid>
 				<Grid item  xs={1} >
-					<div>
-						<img src={dolphin} className={classes.messageIcon} alt='logo'></img>
-					</div>
+					<Avartar column={sender.column} row={sender.row}>
+					</Avartar>
 				</Grid>
 				<Grid item  xs={6}>
-					<p className={classes.user}>{sender}</p>
+					<p className={classes.user}>{sender.name}</p>
 					<div>
 						{message&&<p className={classes.message}>{message}</p>}
 						{storeName&&<img className={classes.image} src={'http://localhost:3000/'+storeName} />}

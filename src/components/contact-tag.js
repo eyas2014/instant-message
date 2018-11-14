@@ -9,8 +9,15 @@ import {refetchDialog} from '../lib/actions';
 
 const styles={
 	root: {
-		backgroundColor: '#cc8',
-		color: '#fff'
+		color: '#fff',
+		borderTop: 'solid 1px #666',
+		borderBottom: 'solid 1px #666',
+		boxShadow: 'inset 0px 1px 2px #fff, inset 0px 0px 2px #fff',
+		marginTop: '6px',
+		marginLeft: '-3px',
+		marginRight: '-3px',
+		width: "106%",
+		background: "linear-gradient(#649fcd, #427dab)"
 	},
 
 	container: {
@@ -18,8 +25,9 @@ const styles={
 		lineHeight: '1'
 	},
 
-	lastMessage: {
-		fontSize: '11px'
+	icon: {
+		marginLeft: '10px',
+		color: '#fff'
 	},
 	date: {
 		fontSize: '13px',
@@ -33,28 +41,27 @@ const styles={
 class ContactTag extends Component {
 	handleClick(receiver){
 		if(receiver!==this.props.receiver) {
-//			this.props.dispatch({type: 'updateReceiver', receiver});
 			this.props.dispatch(refetchDialog(this.props.sender, receiver));
 		}
 
 	}
 
 	render(){
-		const {contacts, classes, searchStr}= this.props;
+		const {contacts, classes, searchStr, receiver}= this.props;
 		return (      
 		<List component="nav">{contacts.map((item, index)=>{
 				if(item.name.indexOf(searchStr)===-1)return null;
 				else {
 					return (	        
 					<ListItem button classes={{root: classes.root}} key={index} onClick={()=>{this.handleClick(item.name)}}>
-			          <ListItemIcon>
-			            <SmsIcon />
-			          </ListItemIcon>
 			          <div className={classes.container}>
 				          <span  className={classes.user}>{item.name}</span> 
 				          <br />
 				          <span  className={classes.date}>{item.lastVisited}</span>
 				      </div>
+				      {receiver===item.name&&<ListItemIcon className={classes.icon}>
+			            <SmsIcon />
+			          </ListItemIcon>}
 			        </ListItem>)
 			    }
 			})}
