@@ -8,24 +8,26 @@ var crypto=require('crypto');
 var events={};
 var contacts={};
 const multer = require('multer');
+const multerS3 = require('multer-s3');
+const AWS=require('aws-sdk');
 
 app.use(express.static('public'));
 
+AWS.config.loadFromPath('./s3_config.json');
+var s3 = new AWS.S3();
+
 const multerConfig = {
-
-    storage: multer.diskStorage({
-      destination: function(req, file, next){
-        next(null, './public');
-      },
-
-      filename: function(req, file, next){
-        const ext = file.mimetype.split('/')[1];
-        const storeName=file.fieldname + '-' + Date.now() + '.'+ext;
-        req.body.storeName=storeName;
-        req.body.originalName=file.originalname;
-        next(null, storeName);
-      }
-    }),
+	storage: multerS3({
+	    s3: s3,
+	    bucket: 'yaminginstantmessage',
+	    acl: 'public-read',
+	    metadata: function (req, file, cb) {
+	      cb(null, {fieldName: file.fieldname});
+	    },
+	    key: function (req, file, cb) {
+	      cb(null, Date.now().toString()+'.'+file.mimetype.split('/')[1])
+	    }
+  	}),
 
     fileFilter: function(req, file, next){
           if(!file){
@@ -71,14 +73,15 @@ function getTime(){
 }
 
 app.post('/uploadImg', multer(multerConfig).single('file'), function(req, res){
-	const {sender, receiver, storeName, originalName}=req.body;
+	const storeName=req.file.key;
+	const {sender, receiver,  originalName}=req.body;
 	req.body.sender={name: sender, 
 					column: accounts[sender].column, 
 					row:accounts[sender].row};
 	req.body.clientTime=parseInt(req.body.clientTime);
 	nameOutbound=sender+'-'+receiver;
 	events[nameOutbound]=events[nameOutbound]||[];
-	events[nameOutbound].push({...req.body, type: "sendNewMessage"});
+	events[nameOutbound].push({...req.body, storeName, type: "sendNewMessage"});
 	res.send(JSON.stringify({originalName, storeName}));
 })
 

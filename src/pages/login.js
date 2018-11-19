@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+import { apiAddress } from '../config.js';
 
 const Image=styled.img`
 	height: 200px;
@@ -25,7 +26,7 @@ class Login extends Component {
 	}
 
 	submit(){
-		fetch("http://localhost:3000/authenticate", {
+		fetch(apiAddress+"/authenticate", {
 	        method: "POST", 
 	        mode: "cors", 
 	        cache: "no-cache", 
@@ -40,7 +41,7 @@ class Login extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.validated) {
-				window.location.href="http://localhost:3000#/dashboard/"+this.state.userName;
+				window.location.href=apiAddress+"#/dashboard/"+this.state.userName;
 			}
 			else this.setState({incorrectPassword: true});
 		})

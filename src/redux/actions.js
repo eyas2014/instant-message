@@ -1,3 +1,33 @@
+import { apiAddress } from '../config.js';
+
+export function postLogin(username){
+	return function(dispatch){
+		fetch(apiAddress+"/postLogin", {
+	        method: "POST", 
+	        mode: "cors", 
+	        cache: "no-cache", 
+	        credentials: "same-origin", 
+	        headers: {
+	            "Content-Type": "application/json; charset=utf-8",	       
+	        },
+	        redirect: "follow", 
+	        referrer: "no-referrer", 
+	        body: JSON.stringify({username}), 
+		}).then((response)=>{
+			return response.json()
+		}).then((data)=>{
+			if(data.validated) {
+				dispatch({type: 'login', 
+					name: username, 
+					column: data.column, 
+					row: data.row});
+				dispatch(updateContacts(username));
+			}
+			else window.location.href=apiAddress+"#/login";
+		})
+	}
+}
+
 export function uploadImg(sender, receiver, deleteTimer, f){
 	return function(dispatch){
 		var formData = new FormData();
@@ -8,7 +38,7 @@ export function uploadImg(sender, receiver, deleteTimer, f){
 	    formData.append("clientTime", clientTime);
 	    formData.append("deleteTimer", deleteTimer);
 
-		return fetch('http://localhost:3000/uploadImg',{
+		return fetch(apiAddress+'/uploadImg',{
 				method: "POST", 
 		        mode: "cors", 
 		        cache: "no-cache", 
@@ -32,7 +62,7 @@ export function uploadImg(sender, receiver, deleteTimer, f){
 export function addContact(sender, contact){
 	return function(dispatch){
 		dispatch({type: 'addContactStart'})
-		return fetch('http://localhost:3000/addContact',{
+		return fetch(apiAddress+'/addContact',{
 					method: "POST", 
 			        mode: "cors", 
 			        cache: "no-cache", 
@@ -55,7 +85,7 @@ export function addContact(sender, contact){
 
 export function loadAccounts(sender){
 	return function(dispatch){
-		return fetch('http://localhost:3000/loadAccounts',{
+		return fetch(apiAddress+'/loadAccounts',{
 					method: "POST", 
 			        mode: "cors", 
 			        cache: "no-cache", 
@@ -76,7 +106,7 @@ export function loadAccounts(sender){
 
 export function updateContacts(sender){
 	return function(dispatch){
-		return fetch('http://localhost:3000/getContacts',{
+		return fetch(apiAddress+'/getContacts',{
 					method: "POST", 
 			        mode: "cors", 
 			        cache: "no-cache", 
@@ -98,7 +128,7 @@ export function updateContacts(sender){
 
 export function updateDialog(sender, receiver){
 	return function(dispatch){
-		return fetch('http://localhost:3000/updateDialog',{
+		return fetch(apiAddress+'/updateDialog',{
 					method: "POST", 
 			        mode: "cors", 
 			        cache: "no-cache", 
@@ -127,7 +157,7 @@ export function updateDialog(sender, receiver){
 export function refetchDialog(sender, receiver){
 		return function(dispatch){
 			dispatch({type:'refetchStart', receiver})
-			return fetch('http://localhost:3000/refetchDialog',{
+			return fetch(apiAddress+'/refetchDialog',{
 						method: "POST", 
 				        mode: "cors", 
 				        cache: "no-cache", 
@@ -152,7 +182,7 @@ export function refetchDialog(sender, receiver){
 export function sendMessage(ev){
 		return function(dispatch){
 			dispatch(ev);
-			return fetch('http://localhost:3000/sendNewMessage',{
+			return fetch(apiAddress+'/sendNewMessage',{
 						method: "POST", 
 				        mode: "cors", 
 				        cache: "no-cache", 
@@ -174,7 +204,7 @@ export function sendMessage(ev){
 export function deleteMessages(sender, receiver, list){
 		return function(dispatch){
 			dispatch({type: 'deleteMessages'});
-			return fetch('http://localhost:3000/deleteMessages',{
+			return fetch(apiAddress+'/deleteMessages',{
 						method: "POST", 
 				        mode: "cors", 
 				        cache: "no-cache", 

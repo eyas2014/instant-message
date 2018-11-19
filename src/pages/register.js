@@ -5,7 +5,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import Menu from '@material-ui/core/Menu';
-import AvatarPopper from '../components/avatar-popper'
+import AvatarPopper from '../components/avatar-popper';
+import { apiAddress } from '../config.js';
 
 
 const Image=styled.img`
@@ -66,7 +67,7 @@ class Register extends Component {
 
 
 	submit(){
-		fetch('http://localhost:3000/registration', {
+		fetch(apiAddress+'/registration', {
 			method: "POST", 
 	        mode: "cors", 
 	        cache: "no-cache", 
@@ -84,7 +85,7 @@ class Register extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.success) {
-				window.location.href="http://localhost:3000#/dashboard/"+this.state.userName;
+				window.location.href=apiAddress+"#/dashboard/"+this.state.userName;
 			}
 			else this.setState({accountExist: true});
 		})

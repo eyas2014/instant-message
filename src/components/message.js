@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import IconCheckCircle from '@material-ui/icons/CheckCircle';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
+import {apiAddress} from '../config';
 
 const Avartar=styled.div`
 	width: 50px;
@@ -114,6 +114,7 @@ class Message extends Component {
 		else timeLeft=Math.floor(deleteTimer/60)+':'+Math.floor(deleteTimer%60);
 
 		var classes=this.props.classes;
+		var awsAddress='https://yaminginstantmessage.s3.us-east-2.amazonaws.com/';  //1542600009222
 		return (
 		<div>
 			<Grid container justify="center"  onClick={this.toggleMessage.bind(this)} className={selected?classes.greyBackground:classes.brightBackground}>
@@ -128,7 +129,7 @@ class Message extends Component {
 					<p className={classes.user}>{sender.name}</p>
 					<div>
 						{message&&<p className={classes.message}>{message}</p>}
-						{storeName&&<img className={classes.image} src={'http://localhost:3000/'+storeName} alt="pp"/>}
+						{storeName&&<img className={classes.image} src={awsAddress+storeName} alt="pp"/>}
 					</div>
 				</Grid>
 				<Grid item  xs={1}>

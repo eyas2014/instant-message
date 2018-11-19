@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import {connect} from 'react-redux';
+import { apiAddress } from '../config.js';
 
 const styles={
 	floatRight: {
@@ -59,8 +60,7 @@ const styles={
 
 class HeaderBar extends Component {
 	logout(username){
-		console.log(username);
-		fetch("http://localhost:3000/logout", {
+		fetch(apiAddress+"/logout", {
 		        method: "POST", 
 		        mode: "cors", 
 		        cache: "no-cache", 
@@ -75,7 +75,7 @@ class HeaderBar extends Component {
 			return response.json()
 		}).then((data)=>{
 			if(data.loggedOut) {
-				window.location.href="http://localhost:3000#/login";
+				window.location.href=apiAddress+"#/login";
 			}
 		})
 	}

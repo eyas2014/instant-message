@@ -7,7 +7,7 @@ import MessageComposer from '../components/message-composer';
 import DialogBox from '../components/dialog-box';
 import MessageControl from '../components/message-control';
 import { connect } from 'react-redux';
-import {updateContacts} from '../redux/actions';
+import {postLogin} from '../redux/actions';
 
 const styles={
 	background: {
@@ -53,30 +53,7 @@ const styles={
 
 class App extends Component {
 	componentWillMount(){
-		const username=this.props.match.params.username;
-		fetch("http://localhost:3000/postLogin", {
-	        method: "POST", 
-	        mode: "cors", 
-	        cache: "no-cache", 
-	        credentials: "same-origin", 
-	        headers: {
-	            "Content-Type": "application/json; charset=utf-8",	       
-	        },
-	        redirect: "follow", 
-	        referrer: "no-referrer", 
-	        body: JSON.stringify({username}), 
-		}).then((response)=>{
-			return response.json()
-		}).then((data)=>{
-			if(data.validated) {
-				this.props.dispatch({type: 'login', 
-									name: username, 
-									column: data.column, 
-									row: data.row});
-				this.props.dispatch(updateContacts(username));
-			}
-			else window.location.href="http://localhost:3000#/login";
-		})
+		this.props.dispatch(postLogin(this.props.match.params.username));
 	}
 
 	render(){
