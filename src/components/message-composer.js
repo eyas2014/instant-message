@@ -56,13 +56,6 @@ const styles={
 		float:'right'
 	},
 
-	// emotionPic: {
-	// 	width: "30px",
-	// 	height: "30px",
-	// 	background: "url("+emotionPic+") 60px 60px",
-	// 	backgroundSize: "810px 210px"
-	// },
-
 	messageInput: {
 		color: 'red'
 
