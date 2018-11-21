@@ -1,33 +1,31 @@
 var cookieParser=require("cookie-parser");
 const express=require("express");
 const app=express();
-const port=3001;
+const port=process.env.port||3001;
 var bodyParser = require('body-parser');
 var fs=require('fs');
 var crypto=require('crypto');
 var events={};
 var contacts={};
 const multer = require('multer');
-const multerS3 = require('multer-s3');
-const AWS=require('aws-sdk');
 
 app.use(express.static('public'));
 
-AWS.config.loadFromPath('./s3_config.json');
-var s3 = new AWS.S3();
+
 
 const multerConfig = {
-	storage: multerS3({
-	    s3: s3,
-	    bucket: 'yaminginstantmessage',
-	    acl: 'public-read',
-	    metadata: function (req, file, cb) {
-	      cb(null, {fieldName: file.fieldname});
-	    },
-	    key: function (req, file, cb) {
-	      cb(null, Date.now().toString()+'.'+file.mimetype.split('/')[1])
-	    }
-  	}),
+    storage: multer.diskStorage({
+      destination: function(req, file, next){
+        next(null, './public');
+      },
+      filename: function(req, file, next){
+        const ext = file.mimetype.split('/')[1];
+        const storeName=file.fieldname + '-' + Date.now() + '.'+ext;
+        req.body.storeName=storeName;
+        req.body.originalName=file.originalname;
+        next(null, storeName);
+      }
+    }),
 
     fileFilter: function(req, file, next){
           if(!file){
@@ -147,9 +145,6 @@ app.post('/registration', function(req, res){
 				contacts[req.body.userName]=[];
 				res.cookie(req.body.userName, accounts[req.body.userName].row+"#"+accounts[req.body.userName].column);
 				res.send(JSON.stringify({success: true}));
-				// fs.writeFile('./database/account.json', JSON.stringify(accounts), {encoding: 'utf8'}, ()=>{
-				//   	console.log(`created an account for: ${req.body.userName}`)
-				// });
 			});
 		}
 });

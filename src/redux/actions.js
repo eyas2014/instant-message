@@ -49,6 +49,7 @@ export function uploadImg(sender, receiver, deleteTimer, f){
 			})
 			.then((response)=>{return response.json()})
 			.then((res)=>{
+				console.log(res);
 				dispatch({type: 'sendNewMessage', clientTime, sender, deleteTimer, storeName: res.storeName, originalName: res.originalName });
 				dispatch({type:'sentToServer', sender, clientTime })
 			})

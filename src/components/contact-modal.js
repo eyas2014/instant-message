@@ -69,7 +69,6 @@ class ContactModal extends Component {
 
 	render(){
 		const { classes, closeModal, accounts, dispatch, sender } =this.props;
-		console.log(accounts);
 		return(
 		    <Paper className={classes.modal}>
 				<h4 onClick={closeModal} className={classes.title}>Contacts</h4>
