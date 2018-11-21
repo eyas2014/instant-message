@@ -10,14 +10,6 @@ var contacts={};
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const AWS=require('aws-sdk');
-const mysql=require('mysql');
-
-const connection=mysql.createConnection({
-	host: 'instantmessagedb.co3mwqwrfilr.us-east-2.rds.amazonaws.com',
-	user: 'yamingshao',
-	password: 'sym123456',
-	port:  3306
-});
 
 app.use(express.static('public'));
 
@@ -52,34 +44,27 @@ const multerConfig = {
     }
   };
 
+contacts.Tom=["Yaming","Kate"];
+
+contacts.Yaming=["Tom", "Kate"];
+
+contacts.Kate=["Tom", "Yaming"];
+
+
+
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-var accounts={};
-var contacts={};
-connection.connect();
-connection.query('use messages;');
-connection.query('select * from accounts;', function(error, results, fieldName){
-	results.reduce((acc, cur)=>{
-		acc[cur.name]={key: cur.passcode,
-						column: cur.avatarx,
-						row: cur.avatary,
-						lastVisited: cur.last_visited
-					};
-		return acc;
-	}, accounts);
-});
-connection.query('select * from contacts', function(error, results, fieldName){
-	results.reduce((acc, cur)=>{
-		contacts[cur.user1]=contacts[cur.user1]||[];
-		contacts[cur.user2]=contacts[cur.user2]||[];
-		contacts[cur.user1].push(cur.user2);
-		contacts[cur.user2].push(cur.user1);
-	}, contacts)
-});
+var accounts={Yaming:{key: "iD/EvDLtLnOahOP4XCJdGZQLL1NhTDiHXjYTGdbUuZGO9xIiHgWLvHbjHlYkhmH5EXOnCguPr4Mc6UTvq8V5MSRRbwZD+ChX8YmtVS5+i2E+ajZPSHuhnQHOC7CT9e2WFke+G+YRSR1I0WrfB9AVpq/RxnXMYhdSBVr7sypNytuN48318YubvyoMBzsfYN2K5vRSGx81yNt99pT+evmbXY8rS6MWGTC69bp4efYUPbP9f0cFinqDOG7xXA9ariKMdJT4B+jTDLURFtGLBR2mjW1Uo7nVFBzRMkNojKdU+3lNqytrU1ujNBUK8m3fmN9ytdZ8H6dTHTc8vCE6lOonngZtKTRNEmdSnDB6SGw6FSc5PDWhkUHC4m4k5N8gl6cwCqijAUMrizRef/wC9v1aASVPW0F0mlmbceGDGd6IJvr1zG9lDp3Doqylt1kUtAzjeqw1eKNO6DTRKPGjO5LU/FDe6INWoWy5TrYqau7l0T/vYXp7XWPji7i4FoBoox6gCzCSIElC57BAuQK4mVD3nn9OFnGoIiefN/GPGa05aoRSKjxYd/SHj65jArR6OGnjr+eSeFqHx7Ma7xjMpp/wY1Ol0lX7LQ+oACQubYl2+GHq48VsF0SJRSuaIzTgCZl79JqT3brsGvj+LLzTFapCjBSAtdyLMGj0v9UT/Or7AwI=",
+						column: 2, row: 5},
+				Tom: {key:"18Sd16s51Nmg1r75B+JuxGVdSjObnagS8BEoARoDG3L4ImFnPBQ/zVsnuQxjhQgy62R/BW6shVwKQQogOBumg1SKYgzfLPOY1SWM6eNimLZhZa/DDX7tQI4PICKfWnSOZbjUv7STASb/AXp61pd6aN1Em8vr4nNOjkNGYBFdV3w2zGgWyvOZ/8wF2jtXmWV+3LVu7mHBBo2TIKmoY2GPG5i4wnZRKWbvtC5+lROcwebzG0mhYqTkPmdG59dZDGY/nQEAooBN2Xvzh7zfcDY3AU/CadpEd1YKk86GhB/m2Bghc7RXB7ppeFBJe7FLGPXnUVrdWhS56beUNNDNGcY/QksacrI2HaWLrxpHXMpwLFQVNT0faewqfWgLZNEpHh5S1jDQYf4de57wxlkffA/6ooHm+jDHiqduCO0avVeGwnX26/OnJAqtOi7fBtkHJBwIFQeNkivD3zfUR87mBSHnuQO3He9GJOwlogtU5myysha9g3pyNh7Xe/x4B7HiMxfTRsyl+86bxlzddcXNUrPAkMdVseF5zmCsz6DKmTRtyohb8Uj/hwNfqGeEv1mKXv8zt82TSElocwtXGXAa9pGS5RLUbl4djUEOCLoU2biCEPS5QJYPfAB5xnY8Z0ZgiW3vGjSoE99zB3lDeLErHRg+PFxrr2P7HDmGS6cINeD6nWQ=",
+						column: 2, row: 1},
+				Kate: {column:2, row: 4}
+			};
 
 
-//setTimeout(()=>{console.log(accounts)},2000);
+var lastVisited={Yaming: getTime(), Tom: getTime()};
 
 function getTime(){
 	var t=new Date();
@@ -124,11 +109,8 @@ app.post('/loadAccounts', function(req, res){
 app.post('/addContact', function(req, res){
 	contacts[req.body.sender].push(req.body.contact);
 	contacts[req.body.contact].push(req.body.sender);
-	const q=`insert into contacts (user1, user2) values ('${req.body.sender}', '${req.body.contact}');`
-	connection.query(q, (error)=>{
-		if(error)console.log('failed to save new contact to database');
-		else res.send({name:req.body.contact, lastVisited: accounts[req.body.contact].lastVisited});
-	});
+	res.send({name:req.body.contact, lastVisited: lastVisited[req.body.contact]});
+
 });
 
 
@@ -145,15 +127,8 @@ app.post('/authenticate', function(req, res){
 	crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
 		if(accounts[req.body.userName].key===key.toString('base64')){
 			res.cookie(req.body.userName, accounts[req.body.userName].row+"#"+accounts[req.body.userName].column);
-			const timeNow=getTime();
-			accounts[req.body.userName].lastVisited=timeNow;
-			connection.query(`update accounts set last_visited='${timeNow}' where name='${req.body.userName}'`, (error, results, fields)=>{
-				if(error) console.log(error);
-				else {
-					console.log('update lastVisited to database');
-					res.send(JSON.stringify({validated: true}));
-				};
-			});
+			lastVisited[req.body.userName]=getTime();
+			res.send(JSON.stringify({validated: true}));
 		}else{
 			res.send(JSON.stringify({validated: false}));
 		};
@@ -165,20 +140,16 @@ app.post('/registration', function(req, res){
 			res.send(JSON.stringify({success: false}));
 		}else{
 			crypto.pbkdf2(req.body.password, req.body.userName, 5000, 512, 'sha512', (err, key)=>{
-				key=key.toString('base64');
-				const timeNow=getTime();
-				accounts[req.body.userName]={key, 
+				accounts[req.body.userName]={key: key.toString('base64'), 
 											column:req.body.column, 
 											row: req.body.row};
-				accounts[req.body.userName].lastVisited=timeNow;
+				lastVisited[req.body.userName]=getTime();
 				contacts[req.body.userName]=[];
 				res.cookie(req.body.userName, accounts[req.body.userName].row+"#"+accounts[req.body.userName].column);
-				const q=`insert into accounts (name, avatarx, avatary, last_visited, passcode) values 
-					('${req.body.userName}', '${req.body.row}', '${req.body.column}', '${timeNow}', '${key}')`;
-				connection.query(q, (error)=>{
-					if(error) console.log(error);
-					else res.send(JSON.stringify({success: true}));
-				});
+				res.send(JSON.stringify({success: true}));
+				// fs.writeFile('./database/account.json', JSON.stringify(accounts), {encoding: 'utf8'}, ()=>{
+				//   	console.log(`created an account for: ${req.body.userName}`)
+				// });
 			});
 		}
 });
@@ -300,6 +271,9 @@ app.post('/sendNewMessage', function(req, res){
 	res.send(JSON.stringify({type:'sentToServer', clientTime, sender}));
 })
 
+
+
+
 app.post('/logout', function(req, res){
 	res.clearCookie(req.body.username);
     res.send({loggedOut: true});
@@ -308,10 +282,10 @@ app.post('/logout', function(req, res){
 app.post('/getContacts', function(req, res){
 	var responseList=contacts[req.body.sender].map((item, index)=>{
 		return {name: item, 
-				lastVisited: accounts[item].lastVisited, 
+				lastVisited: lastVisited[item], 
 				column: accounts[item].column, 
 				row: accounts[item].row
-			}
+				}
 	})
 	res.send(responseList);
 });

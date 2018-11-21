@@ -92,7 +92,6 @@ class Register extends Component {
 	}
 
 	chooseAvartar(column, row){
-		console.log([column, row]);
 		this.setState({openPopper: false, column, row});
 	}
 
