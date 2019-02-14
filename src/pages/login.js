@@ -19,6 +19,12 @@ const P=styled.p`
 	color: red;
 `;
 
+const Div=styled.div`
+	position: absolute;
+	right: 300px;
+	text-align: left
+`;
+
 class Login extends Component {
 	constructor(){
 		super();
@@ -57,6 +63,12 @@ class Login extends Component {
 		return (<div>
 					<Image src={logo} alt='logo'></Image>
 					<form>
+						<Div>
+							<p>Default guest account:</p>
+							<p>User Name:Yaming Password: a</p>
+							<p>User Name:Tom  Password: a</p>
+							<p>User Name:Kate  Password: a</p>
+						</Div>
 				        <TextField
 				          id="userName"
 				          label="User Name"
